@@ -1,0 +1,469 @@
+﻿<script setup>
+import { ref, computed, onMounted } from 'vue';
+
+// Load Oswald font for the license plate
+onMounted(() => {
+    if (!document.querySelector('link[href*="Oswald"]')) {
+        const link = document.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+    }
+});
+
+const plateType = ref('definitive'); // 'definitive' or 'provisional'
+const plateNumber = ref('AA-123-AA');
+const department = ref('75');
+const customText = ref('');
+const material = ref('plexiglass');
+const quantity = ref(1);
+
+const price = computed(() => {
+    return material.value === 'plexiglass' ? 14.90 : 12.90;
+});
+
+const totalPrice = computed(() => {
+    return (price.value * quantity.value).toFixed(2);
+});
+
+const incrementQuantity = () => {
+    quantity.value++;
+};
+
+const decrementQuantity = () => {
+    if (quantity.value > 1) {
+        quantity.value--;
+    }
+};
+
+const formatPlateNumber = (value) => {
+    return value.toUpperCase();
+};
+
+const handlePlateInput = (e) => {
+    plateNumber.value = formatPlateNumber(e.target.value);
+};
+
+// Update plate number format when type changes
+const handlePlateTypeChange = () => {
+    if (plateType.value === 'provisional') {
+        plateNumber.value = '1234 WW 75';
+    } else {
+        plateNumber.value = 'AA-123-AA';
+    }
+};
+
+// Calculate star position in circle for EU flag (12 stars)
+const getStarPosition = (index) => {
+    const angle = (index - 1) * 30 - 90; // 360/12 = 30 degrees, start at top
+    const radius = 13; // Radius of the circle
+    const centerX = 50; // Center X in %
+    const centerY = 50; // Center Y in %
+    
+    const x = centerX + radius * Math.cos(angle * Math.PI / 180);
+    const y = centerY + radius * Math.sin(angle * Math.PI / 180);
+    
+    return {
+        left: `${x}%`,
+        top: `${y}%`,
+    };
+};
+
+const departments = [
+    { code: '01', name: 'Ain' },
+    { code: '02', name: 'Aisne' },
+    { code: '03', name: 'Allier' },
+    { code: '06', name: 'Alpes-Maritimes' },
+    { code: '13', name: 'Bouches-du-RhÃ´ne' },
+    { code: '33', name: 'Gironde' },
+    { code: '59', name: 'Nord' },
+    { code: '67', name: 'Bas-Rhin' },
+    { code: '69', name: 'RhÃ´ne' },
+    { code: '75', name: 'Paris' },
+    { code: '77', name: 'Seine-et-Marne' },
+    { code: '78', name: 'Yvelines' },
+    { code: '91', name: 'Essonne' },
+    { code: '92', name: 'Hauts-de-Seine' },
+    { code: '93', name: 'Seine-Saint-Denis' },
+    { code: '94', name: 'Val-de-Marne' },
+    { code: '95', name: "Val-d'Oise" },
+];
+</script>
+
+<template>
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/10 text-brand-blue font-bold text-sm mb-6">
+                    <i class="ph-fill ph-paint-brush-broad"></i>
+                    Personnalisation
+                </span>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-brand-dark mb-4">
+                    CrÃ©ez votre <span class="text-gradient">Plaque</span>
+                </h1>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    Configurez votre plaque d'immatriculation en quelques clics. HomologuÃ©e et livrÃ©e chez vous.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                
+                <!-- Left Column: Preview -->
+                <div class="lg:col-span-7 sticky top-32">
+                    <div class="bg-slate-200 rounded-3xl p-8 md:p-16 flex items-center justify-center shadow-inner min-h-[300px] plate-preview-container">
+                        
+                        <!-- The Plate -->
+                        <div class="license-plate">
+                            <!-- Left Strip (Euro) -->
+                            <div class="plate-strip-left">
+                                <div class="eu-flag">
+                                    <div class="eu-star" v-for="n in 12" :key="n" :style="getStarPosition(n)">
+                                        â˜…
+                                    </div>
+                                </div>
+                                <span class="plate-country">F</span>
+                            </div>
+
+                            <!-- Center Content -->
+                            <div class="plate-content">
+                                <span class="plate-number">{{ plateNumber }}</span>
+                                <span v-if="customText" class="plate-text">{{ customText }}</span>
+                            </div>
+
+                            <!-- Right Strip (Region) -->
+                            <div class="plate-strip-right">
+                                <div class="plate-region-logo">
+                                    <i class="ph-fill ph-map-pin text-white text-sm"></i>
+                                </div>
+                                <span class="plate-dept">{{ department }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Features List -->
+                    <div class="grid grid-cols-3 gap-4 mt-8">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 text-center">
+                            <div class="w-10 h-10 mx-auto bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-2">
+                                <i class="ph-bold ph-check-circle"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700">HomologuÃ©e</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 text-center">
+                            <div class="w-10 h-10 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mb-2">
+                                <i class="ph-bold ph-truck"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700">Livraison 48h</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 text-center">
+                            <div class="w-10 h-10 mx-auto bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-2">
+                                <i class="ph-bold ph-shield-check"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700">Garantie Ã  vie</span>
+                        </div>
+                    </div>Type Selection -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-3">
+                                    Type de plaque
+                                </label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" value="definitive" v-model="plateType" @change="handlePlateTypeChange" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand-blue peer-checked:bg-brand-blue/5 transition-all text-center">
+                                            <div class="w-10 h-10 mx-auto mb-2 bg-green-100 peer-checked:bg-brand-blue/20 rounded-full flex items-center justify-center text-green-600 peer-checked:text-brand-blue transition-colors">
+                                                <i class="ph-bold ph-check-circle text-xl"></i>
+                                    :placeholder="plateType === 'provisional' ? '1234 WW 75' : 'AA-123-AA'" 
+                                    :maxlength="plateType === 'provisional' ? 11 : 9"
+                                >
+                                <p class="text-xs text-slate-400 mt-2 text-center">
+                                    <span v-if="plateType === 'definitive'">Format SIV (AA-123-AA) ou FNI (1234 AA 00)</span>
+                                    <span v-else>Format provisoire (1234 WW 75)</span>
+                                
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" value="provisional" v-model="plateType" @change="handlePlateTypeChange" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand-orange peer-checked:bg-brand-orange/5 transition-all text-center">
+                                            <div class="w-10 h-10 mx-auto mb-2 bg-orange-100 peer-checked:bg-brand-orange/20 rounded-full flex items-center justify-center text-orange-600 peer-checked:text-brand-orange transition-colors">
+                                                <i class="ph-bold ph-clock text-xl"></i>
+                                            </div>
+                                            <span class="block font-bold text-slate-700">Provisoire</span>
+                                            <span class="text-xs text-slate-500">Format WW</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- 
+                </div>
+
+                <!-- Right Column: Controls -->
+                <div class="lg:col-span-5">
+                    <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
+                        
+                        <form class="space-y-8" @submit.prevent>
+                            
+                            <!-- Step 1: Number -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-brand-blue text-white flex items-center justify-center text-xs">1</span>
+                                    NumÃ©ro d'immatriculation
+                                </label>
+                                <input 
+                                    type="text" 
+                                    v-model="plateNumber"
+                                    @input="handlePlateInput"
+                                    class="w-full px-4 py-4 text-xl font-mono uppercase text-center rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-brand-blue focus:ring-0 outline-none transition-all placeholder-slate-300"
+                                    placeholder="AA-123-AA" 
+                                    maxlength="9"
+                                >
+                                <p class="text-xs text-slate-400 mt-2 text-center">Format SIV (AA-123-AA) ou FNI (1234 AA 00)</p>
+                            </div>
+
+                            <!-- Step 2: Department -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-brand-blue text-white flex items-center justify-center text-xs">2</span>
+                                    DÃ©partement
+                                </label>
+                                <select 
+                                    v-model="department"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all"
+                                >
+                                    <option v-for="dept in departments" :key="dept.code" :value="dept.code">
+                                        {{ dept.code }} - {{ dept.name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Step 3: Custom Text -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-brand-blue text-white flex items-center justify-center text-xs">3</span>
+                                    Texte personnalisÃ© (Optionnel)
+                                </label>
+                                <input 
+                                    type="text" 
+                                    v-model="customText"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all"
+                                    placeholder="Ex: CENTRAL AUTO B" 
+                                    maxlength="40"
+                                >
+                            </div>
+
+                            <!-- Step 4: Material -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-brand-blue text-white flex items-center justify-center text-xs">4</span>
+                                    MatÃ©riau
+                                </label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" value="plexiglass" v-model="material" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand-blue peer-checked:bg-brand-blue/5 transition-all text-center">
+                                            <span class="block font-bold text-slate-700">Plexiglass</span>
+                                            <span class="text-xs text-slate-500">Haut de gamme</span>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" value="alu" v-model="material" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand-blue peer-checked:bg-brand-blue/5 transition-all text-center">
+                                            <span class="block font-bold text-slate-700">Aluminium</span>
+                                            <span class="text-xs text-slate-500">Standard</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Summary & Action -->
+                            <div class="pt-8 border-t border-slate-100">
+                                <div class="flex justify-between items-end mb-6">
+                                    <div>
+                                        <span class="block text-sm text-slate-500 mb-1">Prix unitaire</span>
+                                        <span class="text-3xl font-extrabold text-brand-dark">{{ price.toFixed(2) }} â‚¬</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <button 
+                                            type="button" 
+                                            @click="decrementQuantity"
+                                            class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 font-bold"
+                                        >-</button>
+                                        <span class="font-bold w-8 text-center">{{ quantity }}</span>
+                                        <button 
+                                            type="button" 
+                                            @click="incrementQuantity"
+                                            class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 font-bold"
+                                        >+</button>
+                                    </div>
+                                </div>
+                                
+                                <button 
+                                    type="button" 
+                                    class="w-full py-4 rounded-xl bg-brand-gradient text-white font-bold text-lg shadow-lg shadow-brand-orange/20 hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <i class="ph-bold ph-shopping-cart"></i>
+                                    Ajouter au panier ({{ totalPrice }} â‚¬)
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</template>
+
+<style scoped>
+.plate-preview-container {
+    overflow: visible;
+}
+
+/* Plate Styles */
+.license-plate {
+    width: 520px;
+    height: 110px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 
+        0 0 0 3px #000,
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        inset 0 0 20px rgba(0,0,0,0.08);
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+}-flag {
+    width: 38px;
+    height: 38px;
+    position: relative;
+    margin-top: 2px;
+}
+
+.eu-star {
+    position: absolute;
+    color: #FFDD00;
+    font-size: 7px;
+    transform: translate(-50%, -50%);
+    line-height: 1;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.3)
+    background: #003399;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    position: relative;
+    z-index: 10;
+}
+
+.euro-stars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 4px;
+    padding: 0 4px;
+}
+
+.plate-country {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0;
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+}
+
+/* Center Content */
+.plate-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: white;
+    padding: 0 8px;
+}
+
+.plate-number {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: 8px;
+    color: #000;
+    line-height: 1;
+    text-transform: uppercase;
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+}
+
+.plate-text {
+    position: absolute;
+    bottom: 8px;
+    font-size: 11px;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* Right Region Strip */
+.plate-strip-right {
+    width: 45px;
+    height: 100%;
+    background: #003399;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    position: relative;
+    z-index: 10;
+}
+
+.plate-region-logo {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plate-dept {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    font-family: 'Oswald', 'Arial Narrow', sans-serif;
+    letter-spacing: 0;
+}
+
+/* Responsive Plate */
+@media (max-width: 1024px) {
+    .license-plate {
+        transform: scale(0.85);
+        transform-origin: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .license-plate {
+        transform: scale(0.7);
+        transform-origin: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .license-plate {
+        transform: scale(0.55);
+        transform-origin: center;
+    }
+    
+    .plate-preview-container {
+        min-height: 200px !important;
+        padding: 2rem !important;
+    }
+}
+</style>

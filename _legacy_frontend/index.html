@@ -1,0 +1,2900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Auto B | Vente & Location de Véhicules</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Configuration Tailwind personnalisée -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#1a1a1a',    // Noir du texte "CENTRAL"
+                            blue: '#004aad',    // Bleu du logo
+                            red: '#e63946',     // Rouge du logo (milieu)
+                            orange: '#f4a261',  // Orange du logo (début)
+                            light: '#f8fafc'
+                        }
+                    },
+                    backgroundImage: {
+                        'brand-gradient': 'linear-gradient(135deg, #f4a261 0%, #e63946 50%, #004aad 100%)',
+                        'brand-gradient-hover': 'linear-gradient(135deg, #e76f51 0%, #d62828 50%, #023e8a 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Animations avancées */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation pour le logo */
+        @keyframes logoShine {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.2) drop-shadow(0 0 10px rgba(244, 162, 97, 0.3)); }
+            100% { filter: brightness(1); }
+        }
+
+        .logo-shine {
+            animation: logoShine 3s ease-in-out infinite;
+        }
+
+        /* Cards avec effet moderne */
+        .car-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .car-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 74, 173, 0.15);
+        }
+
+        .car-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 1rem;
+            padding: 2px;
+            background: linear-gradient(135deg, #f4a261, #e63946, #004aad);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .car-card:hover::before {
+            opacity: 0.6;
+        }
+        
+        /* Onglets avec effet glassmorphism */
+        .tab-active {
+            background: linear-gradient(135deg, #004aad 0%, #002f6c 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 24px rgba(0, 74, 173, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .tab-inactive {
+            background-color: transparent;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .tab-inactive:hover {
+            border-color: #004aad;
+            color: #004aad;
+        }
+        
+        /* Gradient Text Class avec animation */
+        .text-gradient {
+            background: linear-gradient(90deg, #f4a261, #e63946, #004aad, #f4a261);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s linear infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Glassmorphism effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Bouton avec effet glow */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-glow:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Parallax effect for hero */
+        .parallax-bg {
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        /* Service card hover effect */
+        .service-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Pulse animation for icons */
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .icon-pulse {
+            animation: pulse-slow 2s ease-in-out infinite;
+        }
+
+        /* Navbar scroll effect */
+        .navbar-scrolled {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #f4a261, #e63946, #004aad);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            opacity: 0.8;
+        }
+
+        /* Animations au scroll */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .scroll-reveal-left.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .scroll-reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .scroll-reveal-right.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Hide scrollbar for carousel */
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Car carousel card */
+        .carousel-card {
+            flex: 0 0 calc(100% - 24px);
+            scroll-snap-align: start;
+        }
+        @media (min-width: 768px) {
+            .carousel-card {
+                flex: 0 0 calc(50% - 16px);
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-card {
+                flex: 0 0 calc(33.333% - 16px);
+            }
+        }
+
+        /* Animation compteurs */
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .counter-animate {
+            animation: countUp 0.6s ease-out;
+        }
+
+        /* Formulaire multi-étapes */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-step {
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%);
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.completed::after {
+            background: #f4a261;
+        }
+
+        /* Form inputs with modern styling */
+        input:focus, textarea:focus, select:focus {
+            transform: translateY(-2px);
+        }
+
+        /* Badge animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24 py-2 relative">
+                <!-- Logo avec animation -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
+                    <img src="unnamed.png" alt="Central Auto B Logo" class="h-20 w-auto object-contain logo-shine group-hover:scale-105 transition-transform duration-300">
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
+                    <a href="index.html" id="nav-home" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Accueil</a>
+                    <a href="catalogue.html?type=sale" id="nav-buy" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Acheter</a>
+                    <a href="catalogue.html?type=rent" id="nav-rent" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Louer</a>
+                    <a href="#custom-request" id="nav-sell" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Vendre</a>
+                    <a href="#plates" id="nav-plates" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Plaques d'immatriculation</a>
+                </div>
+
+                <!-- Contact Button -->
+                <div class="hidden md:flex items-center">
+                    <a href="#contact" class="bg-brand-gradient text-white px-6 py-2.5 rounded-full font-bold hover:opacity-90 transition-all shadow-lg flex items-center gap-2 transform hover:scale-105 duration-300 btn-glow relative overflow-hidden">
+                        <i class="ph-bold ph-phone relative z-10"></i> <span class="relative z-10">Contact</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-700 hover:text-brand-blue focus:outline-none p-2">
+                        <i class="ph ph-list text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="index.html" class="block px-3 py-4 rounded-lg text-lg font-medium text-slate-700 hover:bg-slate-50 border-b border-slate-50">Accueil</a>
+                <a href="catalogue.html?type=sale" class="block px-3 py-4 rounded-lg text-lg font-medium text-slate-700 hover:bg-slate-50 border-b border-slate-50">Acheter</a>
+                <a href="catalogue.html?type=rent" class="block px-3 py-4 rounded-lg text-lg font-medium text-slate-700 hover:bg-slate-50 border-b border-slate-50">Louer</a>
+                <a href="#custom-request" class="block px-3 py-4 rounded-lg text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-orange via-brand-red to-brand-blue">Vendre</a>
+                <a href="#contact" class="block px-3 py-4 rounded-lg text-lg font-medium text-slate-700 hover:bg-slate-50">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Design Ultra Moderne -->
+    <header class="relative min-h-screen flex items-center overflow-hidden bg-brand-dark">
+        <!-- Video Background Effect with Multiple Layers -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Luxury Car" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/70"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-brand-dark/50"></div>
+        </div>
+        
+        <!-- Animated Particles/Lines Effect -->
+        <div class="absolute inset-0 z-1 opacity-30">
+            <div class="absolute top-20 left-10 w-px h-40 bg-gradient-to-b from-transparent via-brand-orange to-transparent animate-pulse"></div>
+            <div class="absolute top-40 left-1/4 w-px h-60 bg-gradient-to-b from-transparent via-brand-red to-transparent animate-pulse" style="animation-delay: 0.5s;"></div>
+            <div class="absolute top-10 right-1/3 w-px h-80 bg-gradient-to-b from-transparent via-brand-blue to-transparent animate-pulse" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-20 right-20 w-40 h-px bg-gradient-to-r from-transparent via-brand-orange to-transparent animate-pulse"></div>
+        </div>
+
+        <!-- Floating Brand Colors -->
+        <div class="absolute top-1/4 right-0 w-[600px] h-[600px] bg-brand-blue/20 rounded-full blur-[150px] float-animation"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-orange/15 rounded-full blur-[120px] float-animation" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/3 w-[300px] h-[300px] bg-brand-red/10 rounded-full blur-[100px] float-animation" style="animation-delay: 1s;"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div class="text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
+                        <span class="w-2 h-2 bg-brand-orange rounded-full animate-pulse"></span>
+                        <span class="text-white/90 text-sm font-medium tracking-wide">Votre partenaire automobile de confiance</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-[1.1]">
+                        Trouvez le véhicule
+                        <span class="block mt-2">
+                            <span class="text-gradient">de vos rêves</span>
+                        </span>
+                    </h1>
+                    
+                    <p class="text-xl text-slate-300 mb-10 max-w-lg leading-relaxed">
+                        Vente, reprise, location — une expertise automobile complète pour concrétiser votre projet en toute sérénité.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                        <button onclick="scrollToSection('stock')" class="group bg-brand-gradient hover:opacity-90 text-white px-8 py-5 rounded-2xl font-bold text-lg transition-all shadow-2xl shadow-brand-red/30 flex items-center justify-center gap-3 hover:shadow-brand-red/50 btn-glow relative overflow-hidden hover:-translate-y-1">
+                            <i class="ph-bold ph-car-profile text-xl relative z-10"></i> 
+                            <span class="relative z-10">Explorer le stock</span>
+                            <i class="ph-bold ph-arrow-right relative z-10 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                        <button onclick="scrollToSection('custom-request')" class="group bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/30 text-white px-8 py-5 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 hover:-translate-y-1">
+                            <i class="ph-bold ph-magnifying-glass text-xl"></i> 
+                            <span>Recherche sur mesure</span>
+                        </button>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap items-center gap-6">
+                        <div class="flex items-center gap-2">
+                            <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                                <i class="ph-fill ph-shield-check text-green-400 text-xl"></i>
+                            </div>
+                            <span class="text-white/80 text-sm font-medium">Garantie incluse</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-10 h-10 rounded-xl bg-brand-orange/20 flex items-center justify-center">
+                                <i class="ph-fill ph-handshake text-brand-orange text-xl"></i>
+                            </div>
+                            <span class="text-white/80 text-sm font-medium">Reprise estimée</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center">
+                                <i class="ph-fill ph-credit-card text-brand-blue text-xl"></i>
+                            </div>
+                            <span class="text-white/80 text-sm font-medium">Financement facile</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Content - Featured Car Card -->
+                <div class="relative mt-12 lg:mt-0">
+                    <div class="relative">
+                        <!-- Main Car Image -->
+                        <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10">
+                            <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Véhicule Premium" 
+                                 class="w-full h-[350px] md:h-[450px] object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                            
+                            <!-- Car Info Overlay -->
+                            <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                                <div class="flex items-end justify-between">
+                                    <div>
+                                        <span class="inline-block px-3 py-1 bg-brand-orange text-white text-xs font-bold rounded-full mb-3">COUP DE CŒUR</span>
+                                        <h3 class="text-xl md:text-2xl font-bold text-white">BMW Série 3</h3>
+                                        <p class="text-slate-300 text-sm md:text-base">330e Hybrid • 2023</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-2xl md:text-3xl font-extrabold text-white">45 900 €</p>
+                                        <p class="text-slate-400 text-sm">12 000 km</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Stats Cards -->
+                        <div class="absolute -left-2 md:-left-8 top-1/4 bg-white/95 backdrop-blur-sm rounded-2xl p-3 md:p-4 shadow-xl border border-slate-100 float-animation scale-90 md:scale-100 origin-left">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 md:w-12 md:h-12 bg-brand-blue/10 rounded-xl flex items-center justify-center">
+                                    <i class="ph-fill ph-car text-brand-blue text-xl md:text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xl md:text-2xl font-bold text-brand-dark">50+</p>
+                                    <p class="text-slate-500 text-xs font-medium">En stock</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="absolute -right-2 md:-right-4 bottom-1/3 bg-white/95 backdrop-blur-sm rounded-2xl p-3 md:p-4 shadow-xl border border-slate-100 float-animation scale-90 md:scale-100 origin-right" style="animation-delay: 1s;">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <i class="ph-fill ph-star text-green-600 text-xl md:text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xl md:text-2xl font-bold text-brand-dark">4.9/5</p>
+                                    <p class="text-slate-500 text-xs font-medium">Avis clients</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+            <div class="w-8 h-14 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
+                <div class="w-1.5 h-3 bg-white rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Marques partenaires - Logo Slider -->
+    <section class="py-8 bg-white border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Renault_2021_Text.svg/512px-Renault_2021_Text.svg.png" alt="Renault" class="h-8 md:h-10 object-contain">
+                <img src="https://media.gqmagazine.fr/photos/6038d09a37a87185201b010f/4:3/w_2349,h_1762,c_limit/PEUGEOT_PR_NEWLOGO_WHITE.jpg" alt="Peugeot" class="h-8 md:h-10 object-contain">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/512px-Audi-Logo_2016.svg.png" alt="Audi" class="h-8 md:h-10 object-contain">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/512px-BMW.svg.png" alt="BMW" class="h-8 md:h-10 object-contain">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/512px-Mercedes-Logo.svg.png" alt="Mercedes" class="h-8 md:h-10 object-contain">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/512px-Volkswagen_logo_2019.svg.png" alt="Volkswagen" class="h-8 md:h-10 object-contain">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Toyota_EU.svg/512px-Toyota_EU.svg.png" alt="Toyota" class="h-6 md:h-8 object-contain">
+            </div>
+        </div>
+    </section>
+
+    <!-- Compteurs Statistiques - Design Amélioré -->
+    <section class="py-20 bg-gradient-to-b from-slate-900 to-brand-dark relative overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-orange/10 rounded-full blur-[150px]"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-blue/10 rounded-full blur-[150px]"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Pourquoi nous choisir ?</h2>
+                <div class="w-20 h-1 bg-brand-gradient mx-auto rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center group scroll-reveal">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-orange/20 to-brand-orange/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-car text-brand-orange text-4xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">
+                        <span class="counter" data-target="150">0</span>+
+                    </div>
+                    <p class="text-slate-400 font-medium">Véhicules vendus</p>
+                </div>
+                <div class="text-center group scroll-reveal" style="transition-delay: 0.1s;">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-smiley text-green-400 text-4xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">
+                        <span class="counter" data-target="98">0</span>%
+                    </div>
+                    <p class="text-slate-400 font-medium">Clients satisfaits</p>
+                </div>
+                <div class="text-center group scroll-reveal" style="transition-delay: 0.2s;">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-blue/20 to-brand-blue/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-calendar-check text-brand-blue text-4xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">
+                        <span class="counter" data-target="12">0</span>+
+                    </div>
+                    <p class="text-slate-400 font-medium">Années d'expérience</p>
+                </div>
+                <div class="text-center group scroll-reveal" style="transition-delay: 0.3s;">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-red/20 to-brand-red/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-warehouse text-brand-red text-4xl"></i>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-extrabold text-white mb-2">
+                        <span class="counter" data-target="50">0</span>+
+                    </div>
+                    <p class="text-slate-400 font-medium">Véhicules en stock</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section - Nouveau Design Premium -->
+    <section id="services" class="py-24 bg-white relative overflow-hidden">
+        <!-- Subtle Background Pattern -->
+        <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/5 border border-brand-blue/10 text-brand-blue font-semibold text-sm mb-6">
+                    <i class="ph-fill ph-star-four"></i>
+                    Nos Services
+                </span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-brand-dark mb-4">
+                    Une expertise<br class="hidden md:block"> <span class="text-gradient">à votre service</span>
+                </h2>
+                <p class="text-slate-600 max-w-2xl mx-auto text-lg">Des solutions sur mesure pour accompagner chaque étape de votre projet automobile</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Service 1 - Vente & Reprise -->
+                <div class="group relative h-[500px] rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 scroll-reveal-left">
+                    <!-- Background Image -->
+                    <div class="absolute inset-0">
+                        <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Vente de véhicules" 
+                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:via-black/60 transition-all duration-500"></div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                        <div class="mb-auto">
+                            <div class="w-12 h-12 bg-brand-orange rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-brand-orange/30 mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                                <i class="ph-fill ph-tag"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-white mb-3">Vente & Reprise</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 opacity-90">Découvrez notre sélection de véhicules neufs et d'occasion. Estimation gratuite.</p>
+                        
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-brand-orange text-base"></i>
+                                Véhicules garantis
+                            </li>
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-brand-orange text-base"></i>
+                                Reprise au meilleur prix
+                            </li>
+                        </ul>
+                        
+                        <a href="#stock" class="inline-flex items-center gap-2 text-white text-sm font-bold group-hover:gap-3 transition-all border-b-2 border-brand-orange pb-1 w-fit">
+                            Voir le stock <i class="ph-bold ph-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Service 2 - Location -->
+                <div class="group relative h-[500px] rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 scroll-reveal" style="transition-delay: 0.1s;">
+                    <!-- Background Image -->
+                    <div class="absolute inset-0">
+                        <img src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Location de véhicules" 
+                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:via-black/60 transition-all duration-500"></div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                        <div class="mb-auto">
+                            <div class="w-12 h-12 bg-brand-red rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-brand-red/30 mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                                <i class="ph-fill ph-key"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-white mb-3">Location Flexible</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 opacity-90">Location courte ou longue durée, adaptée à vos besoins.</p>
+                        
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-brand-red text-base"></i>
+                                Kilométrage illimité
+                            </li>
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-brand-red text-base"></i>
+                                Assurance incluse
+                            </li>
+                        </ul>
+                        
+                        <a href="#stock" class="inline-flex items-center gap-2 text-white text-sm font-bold group-hover:gap-3 transition-all border-b-2 border-brand-red pb-1 w-fit">
+                            Voir les tarifs <i class="ph-bold ph-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Service 3 - Chasseur Auto -->
+                <div class="group relative h-[500px] rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 scroll-reveal" style="transition-delay: 0.2s;">
+                    <!-- Background Image -->
+                    <div class="absolute inset-0">
+                        <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             alt="Chasseur automobile" 
+                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:via-black/60 transition-all duration-500"></div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                        <div class="mb-auto">
+                            <div class="w-12 h-12 bg-brand-blue rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-brand-blue/30 mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                                <i class="ph-fill ph-binoculars"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-white mb-3">Chasseur Auto</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 opacity-90">Recherche personnalisée pour trouver la perle rare.</p>
+                        
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-brand-blue text-base"></i>
+                                Recherche ciblée
+                            </li>
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-brand-blue text-base"></i>
+                                Véhicule vérifié
+                            </li>
+                        </ul>
+                        
+                        <a href="#custom-request" class="inline-flex items-center gap-2 text-white text-sm font-bold group-hover:gap-3 transition-all border-b-2 border-brand-blue pb-1 w-fit">
+                            Faire une demande <i class="ph-bold ph-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Service 4 - Plaques Immatriculation -->
+                <div class="group relative h-[500px] rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 scroll-reveal-right" style="transition-delay: 0.3s;">
+                    <!-- Background Image -->
+                    <div class="absolute inset-0">
+                        <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=800&auto=format&fit=crop" 
+                             alt="Plaques d'immatriculation" 
+                             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:via-black/60 transition-all duration-500"></div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                        <div class="mb-auto">
+                            <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-purple-600/30 mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                                <i class="ph-fill ph-article"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-white mb-3">Plaques Auto</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 opacity-90">Service rapide de fabrication et pose de plaques homologuées.</p>
+                        
+                        <ul class="space-y-2 mb-6">
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-purple-500 text-base"></i>
+                                Fabrication immédiate
+                            </li>
+                            <li class="flex items-center gap-2 text-xs text-slate-200">
+                                <i class="ph-fill ph-check-circle text-purple-500 text-base"></i>
+                                Pose offerte
+                            </li>
+                        </ul>
+                        
+                        <a href="#contact" class="inline-flex items-center gap-2 text-white text-sm font-bold group-hover:gap-3 transition-all border-b-2 border-purple-500 pb-1 w-fit">
+                            Nous contacter <i class="ph-bold ph-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulator Section -->
+    <section id="simulator" class="py-24 bg-slate-50 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/5 border border-brand-blue/10 text-brand-blue font-semibold text-sm mb-6">
+                    <i class="ph-fill ph-calculator"></i>
+                    Simulateur
+                </span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-brand-dark mb-4">
+                    Estimez vos <span class="text-gradient">Frais</span>
+                </h2>
+                <p class="text-slate-600 max-w-2xl mx-auto text-lg">Calculez le coût de votre carte grise ou simulez votre financement en quelques clics.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+                <!-- Tabs -->
+                <div class="flex border-b border-slate-100">
+                    <button onclick="switchSimulator('registration')" id="tab-registration" class="flex-1 py-6 text-center font-bold text-lg text-brand-blue border-b-2 border-brand-blue bg-brand-blue/5 transition-all">
+                        <i class="ph-bold ph-cardholder mr-2"></i> Carte Grise
+                    </button>
+                    <button onclick="switchSimulator('financing')" id="tab-financing" class="flex-1 py-6 text-center font-bold text-lg text-slate-500 hover:text-brand-blue transition-all">
+                        <i class="ph-bold ph-bank mr-2"></i> Financement
+                    </button>
+                </div>
+
+                <!-- Registration Simulator -->
+                <div id="sim-registration" class="p-8 md:p-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Puissance Fiscale (CV)</label>
+                                <input type="number" id="reg-cv" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all" placeholder="Ex: 6">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Région</label>
+                                <select id="reg-region" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all">
+                                    <option value="46.15">Auvergne-Rhône-Alpes</option>
+                                    <option value="55">Bourgogne-Franche-Comté</option>
+                                    <option value="55">Bretagne</option>
+                                    <option value="49.80">Centre-Val de Loire</option>
+                                    <option value="27">Corse</option>
+                                    <option value="44">Grand Est</option>
+                                    <option value="33">Hauts-de-France</option>
+                                    <option value="54.95">Île-de-France</option>
+                                    <option value="30">Normandie</option>
+                                    <option value="51">Nouvelle-Aquitaine</option>
+                                    <option value="47">Occitanie</option>
+                                    <option value="51.20">Pays de la Loire</option>
+                                    <option value="51.20">Provence-Alpes-Côte d'Azur</option>
+                                    <option value="30">DOM-TOM</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Énergie</label>
+                                <select id="reg-energy" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all">
+                                    <option value="essence">Essence (ES)</option>
+                                    <option value="diesel">Diesel (GO)</option>
+                                    <option value="hybrid">Hybride (EE, EH, GL...)</option>
+                                    <option value="electric">Électrique (EL)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-8 flex flex-col justify-center items-center text-center border border-slate-100">
+                            <div class="w-16 h-16 bg-brand-blue/10 rounded-full flex items-center justify-center text-brand-blue text-3xl mb-4">
+                                <i class="ph-fill ph-receipt"></i>
+                            </div>
+                            <span class="text-slate-500 font-medium mb-2">Coût estimé de la carte grise</span>
+                            <span id="reg-result" class="text-4xl font-extrabold text-brand-dark">0,00 €</span>
+                            <p class="text-xs text-slate-400 mt-4">*Estimation hors frais de dossier éventuels et malus écologique.</p>
+                            <button onclick="calculateRegistration()" class="mt-6 w-full bg-brand-blue text-white font-bold py-3 rounded-xl hover:bg-brand-dark transition-all shadow-lg shadow-brand-blue/20">
+                                Calculer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financing Simulator -->
+                <div id="sim-financing" class="hidden p-8 md:p-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Prix du véhicule (€)</label>
+                                <input type="number" id="fin-price" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all" placeholder="Ex: 15000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Apport (€)</label>
+                                <input type="number" id="fin-deposit" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all" placeholder="Ex: 3000">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-2">Durée (mois)</label>
+                                    <select id="fin-duration" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all">
+                                        <option value="12">12 mois</option>
+                                        <option value="24">24 mois</option>
+                                        <option value="36">36 mois</option>
+                                        <option value="48" selected>48 mois</option>
+                                        <option value="60">60 mois</option>
+                                        <option value="72">72 mois</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-2">TAEG (%)</label>
+                                    <input type="number" id="fin-rate" value="4.9" step="0.1" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-8 flex flex-col justify-center items-center text-center border border-slate-100">
+                            <div class="w-16 h-16 bg-brand-orange/10 rounded-full flex items-center justify-center text-brand-orange text-3xl mb-4">
+                                <i class="ph-fill ph-coins"></i>
+                            </div>
+                            <span class="text-slate-500 font-medium mb-2">Mensualité estimée</span>
+                            <span id="fin-result" class="text-4xl font-extrabold text-brand-dark">0,00 €</span>
+                            <span class="text-sm text-slate-500 font-semibold mt-1">/ mois</span>
+                            <p class="text-xs text-slate-400 mt-4">*Un crédit vous engage et doit être remboursé. Vérifiez vos capacités de remboursement avant de vous engager.</p>
+                            <button onclick="calculateFinancing()" class="mt-6 w-full bg-brand-orange text-white font-bold py-3 rounded-xl hover:bg-brand-dark transition-all shadow-lg shadow-brand-orange/20">
+                                Calculer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stock Section - Design Premium -->
+    <section id="stock" class="py-24 bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
+        <!-- Decorative elements -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-blue/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-orange/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- Section Véhicules à Vendre -->
+            <div class="mb-24">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-8">
+                    <div class="fade-in">
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-orange/10 text-brand-orange font-semibold text-sm mb-4">
+                            <i class="ph-fill ph-tag"></i>
+                            Achat
+                        </span>
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-brand-dark mb-3">
+                            Véhicules <span class="text-gradient">à Vendre</span>
+                        </h2>
+                        <p class="text-slate-500 text-lg max-w-md">Notre sélection de véhicules d'occasion contrôlés et garantis</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <!-- Navigation Carrousel Vente -->
+                        <div class="flex gap-2">
+                            <button onclick="scrollCarousel('sale', 'prev')" class="w-12 h-12 rounded-full bg-white border-2 border-slate-200 hover:border-brand-orange hover:bg-brand-orange hover:text-white text-slate-600 flex items-center justify-center transition-all shadow-lg">
+                                <i class="ph-bold ph-caret-left text-lg"></i>
+                            </button>
+                            <button onclick="scrollCarousel('sale', 'next')" class="w-12 h-12 rounded-full bg-white border-2 border-slate-200 hover:border-brand-orange hover:bg-brand-orange hover:text-white text-slate-600 flex items-center justify-center transition-all shadow-lg">
+                                <i class="ph-bold ph-caret-right text-lg"></i>
+                            </button>
+                        </div>
+                        <a href="catalogue.html?type=sale" class="group inline-flex items-center gap-2 text-brand-blue hover:text-brand-dark font-semibold transition-all">
+                            <span>Voir tout</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Car Carousel - Vente -->
+                <div class="relative">
+                    <div id="car-carousel-sale" class="flex gap-6 overflow-x-auto scroll-smooth pb-4 hide-scrollbar" style="scroll-snap-type: x mandatory;">
+                        <!-- Cars for sale will be injected here via JS -->
+                    </div>
+                    <!-- Gradient overlays -->
+                    <div class="absolute left-0 top-0 bottom-4 w-16 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none z-10 hidden lg:block"></div>
+                    <div class="absolute right-0 top-0 bottom-4 w-16 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none z-10 hidden lg:block"></div>
+                </div>
+            </div>
+
+            <!-- Section Véhicules en Location -->
+            <div class="mb-16">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-8">
+                    <div class="fade-in">
+                        <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/10 text-brand-blue font-semibold text-sm mb-4">
+                            <i class="ph-fill ph-calendar"></i>
+                            Location
+                        </span>
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-brand-dark mb-3">
+                            Véhicules en <span class="text-gradient">Location</span>
+                        </h2>
+                        <p class="text-slate-500 text-lg max-w-md">Louez le véhicule idéal pour tous vos déplacements</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <!-- Navigation Carrousel Location -->
+                        <div class="flex gap-2">
+                            <button onclick="scrollCarousel('rent', 'prev')" class="w-12 h-12 rounded-full bg-white border-2 border-slate-200 hover:border-brand-blue hover:bg-brand-blue hover:text-white text-slate-600 flex items-center justify-center transition-all shadow-lg">
+                                <i class="ph-bold ph-caret-left text-lg"></i>
+                            </button>
+                            <button onclick="scrollCarousel('rent', 'next')" class="w-12 h-12 rounded-full bg-white border-2 border-slate-200 hover:border-brand-blue hover:bg-brand-blue hover:text-white text-slate-600 flex items-center justify-center transition-all shadow-lg">
+                                <i class="ph-bold ph-caret-right text-lg"></i>
+                            </button>
+                        </div>
+                        <a href="catalogue.html?type=rent" class="group inline-flex items-center gap-2 text-brand-blue hover:text-brand-dark font-semibold transition-all">
+                            <span>Voir tout</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Car Carousel - Location -->
+                <div class="relative">
+                    <div id="car-carousel-rent" class="flex gap-6 overflow-x-auto scroll-smooth pb-4 hide-scrollbar" style="scroll-snap-type: x mandatory;">
+                        <!-- Cars for rent will be injected here via JS -->
+                    </div>
+                    <!-- Gradient overlays -->
+                    <div class="absolute left-0 top-0 bottom-4 w-16 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none z-10 hidden lg:block"></div>
+                    <div class="absolute right-0 top-0 bottom-4 w-16 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none z-10 hidden lg:block"></div>
+                </div>
+            </div>
+            
+            <!-- Bouton Voir Plus -->
+            <div class="mt-16 text-center">
+                <a href="catalogue.html" class="group inline-flex items-center gap-3 bg-brand-dark hover:bg-brand-blue text-white font-bold px-10 py-5 rounded-2xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 transform duration-300">
+                    <i class="ph-bold ph-grid-four text-xl"></i>
+                    <span>Voir le catalogue complet</span>
+                    <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <!-- CTA Recherche personnalisée -->
+            <div class="mt-20 relative">
+                <div class="bg-gradient-to-r from-brand-dark via-slate-900 to-brand-dark rounded-3xl p-8 md:p-12 overflow-hidden relative">
+                    <!-- Background pattern -->
+                    <div class="absolute inset-0 opacity-10">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-orange rounded-full blur-[80px]"></div>
+                        <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-blue rounded-full blur-[80px]"></div>
+                    </div>
+                    
+                    <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div class="text-center md:text-left">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
+                                <i class="ph-fill ph-magnifying-glass text-brand-orange"></i>
+                                <span class="text-white/90 text-sm font-medium">Service Chasseur Auto</span>
+                            </div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-3">Vous ne trouvez pas votre bonheur ?</h3>
+                            <p class="text-slate-300 max-w-lg">Notre équipe d'experts recherche le véhicule parfait pour vous. Décrivez-nous vos critères !</p>
+                        </div>
+                        <button onclick="scrollToSection('custom-request')" class="group flex-shrink-0 bg-brand-gradient text-white font-bold px-8 py-5 rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-brand-red/30 flex items-center gap-3 hover:shadow-brand-red/50 hover:-translate-y-1">
+                            <span>Lancer ma recherche</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Plaques Immatriculation -->
+    <section id="plates" class="py-24 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative">
+                <!-- Background & Overlay -->
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=1200&auto=format&fit=crop" alt="Plaques immatriculation" class="w-full h-full object-cover opacity-40">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent"></div>
+                </div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 p-8 md:p-16 items-center">
+                    <div class="space-y-8">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 font-semibold text-sm">
+                            <i class="ph-fill ph-article"></i>
+                            Service Express
+                        </div>
+                        
+                        <div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">
+                                Vos Plaques d'Immatriculation <br>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">en 5 minutes chrono</span>
+                            </h2>
+                            <p class="text-slate-300 text-lg leading-relaxed">
+                                Ne perdez plus de temps ! Nous fabriquons et posons vos plaques d'immatriculation homologuées SIV directement sur place. Qualité plexiglas haut de gamme garantie.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                    <i class="ph-fill ph-clock text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white">Immédiat</p>
+                                    <p class="text-sm text-slate-400">Fabrication sur place</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                    <i class="ph-fill ph-wrench text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white">Pose Offerte</p>
+                                    <p class="text-sm text-slate-400">Par nos experts</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                    <i class="ph-fill ph-shield-check text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white">Homologué</p>
+                                    <p class="text-sm text-slate-400">Normes SIV France</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+                                    <i class="ph-fill ph-map-pin text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-white">Tous Départements</p>
+                                    <p class="text-sm text-slate-400">Choix libre</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <a href="#contact" class="inline-flex items-center justify-center gap-3 bg-purple-600 hover:bg-purple-700 text-white font-bold px-8 py-4 rounded-2xl transition-all shadow-lg shadow-purple-600/30 hover:-translate-y-1">
+                                <span>Commander mes plaques</span>
+                                <i class="ph-bold ph-arrow-right"></i>
+                            </a>
+                            <div class="flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/5 border border-white/10">
+                                <span class="text-slate-300 text-sm">À partir de</span>
+                                <span class="text-2xl font-bold text-white">15€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Representation of a Plate -->
+                    <div class="hidden lg:flex items-center justify-center relative">
+                        <div class="relative z-10 transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                            <!-- Plate Container -->
+                            <div class="bg-white p-2 rounded-lg shadow-2xl w-[400px]">
+                                <div class="border-4 border-black rounded flex h-[85px] items-center bg-white overflow-hidden relative">
+                                    <!-- Euroband Left -->
+                                    <div class="w-12 h-full bg-blue-700 flex flex-col items-center justify-between py-1">
+                                        <span class="text-white text-xs font-bold">F</span>
+                                    </div>
+                                    
+                                    <!-- Number -->
+                                    <div class="flex-1 flex items-center justify-center gap-4 text-4xl font-bold font-mono tracking-wider text-black">
+                                        <span>AA</span>
+                                        <span>-</span>
+                                        <span>123</span>
+                                        <span>-</span>
+                                        <span>BB</span>
+                                    </div>
+                                    
+                                    <!-- Region Right -->
+                                    <div class="w-12 h-full bg-blue-700 flex flex-col items-center justify-between py-1 relative">
+                                        <div class="w-8 h-8 bg-white/20 rounded-full mt-1"></div> <!-- Logo region placeholder -->
+                                        <span class="text-white text-lg font-bold">75</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reflection effect -->
+                            <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none rounded-lg"></div>
+                        </div>
+                        
+                        <!-- Decorative elements -->
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500 rounded-full blur-[60px] opacity-40"></div>
+                        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500 rounded-full blur-[60px] opacity-40"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Témoignages - Design Premium -->
+    <section class="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+        <div class="absolute top-1/2 left-0 w-[400px] h-[400px] bg-brand-blue/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm mb-6">
+                    <i class="ph-fill ph-star"></i>
+                    Avis Clients Vérifiés
+                </span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-brand-dark mb-4">
+                    La satisfaction client,<br><span class="text-gradient">notre priorité</span>
+                </h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">Découvrez les retours de nos clients satisfaits</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Témoignage 1 -->
+                <div class="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 hover:border-brand-orange/30 scroll-reveal relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-orange/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    
+                    <div class="flex gap-1 mb-6">
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                    </div>
+                    
+                    <p class="text-slate-600 leading-relaxed mb-6">"Excellent service ! J'ai trouvé la voiture de mes rêves en quelques jours. L'équipe est à l'écoute et très professionnelle. Je recommande vivement !"</p>
+                    
+                    <div class="flex items-center gap-4 pt-6 border-t border-slate-100">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-orange to-brand-red flex items-center justify-center text-white text-xl font-bold">
+                            MF
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark">Marie Fontaine</h4>
+                            <p class="text-slate-400 text-sm">Achat Renault Clio</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Témoignage 2 -->
+                <div class="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 hover:border-brand-blue/30 scroll-reveal relative overflow-hidden" style="transition-delay: 0.1s;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-blue/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    
+                    <div class="flex gap-1 mb-6">
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                    </div>
+                    
+                    <p class="text-slate-600 leading-relaxed mb-6">"Service de chasseur auto impeccable. Ils ont trouvé exactement ce que je cherchais à un prix imbattable. Je recommande vivement Central Auto B !"</p>
+                    
+                    <div class="flex items-center gap-4 pt-6 border-t border-slate-100">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-dark flex items-center justify-center text-white text-xl font-bold">
+                            JD
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark">Jean Dupont</h4>
+                            <p class="text-slate-400 text-sm">Chasseur Auto - Peugeot 3008</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Témoignage 3 -->
+                <div class="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 hover:border-brand-red/30 scroll-reveal relative overflow-hidden" style="transition-delay: 0.2s;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-red/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    
+                    <div class="flex gap-1 mb-6">
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                        <i class="ph-fill ph-star text-yellow-400 text-xl"></i>
+                    </div>
+                    
+                    <p class="text-slate-600 leading-relaxed mb-6">"Location simple et rapide. La voiture était impeccable et la reprise s'est faite sans accroc. Équipe réactive et tarifs compétitifs !"</p>
+                    
+                    <div class="flex items-center gap-4 pt-6 border-t border-slate-100">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-red to-brand-orange flex items-center justify-center text-white text-xl font-bold">
+                            SL
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark">Sophie Laurent</h4>
+                            <p class="text-slate-400 text-sm">Location Citroën C3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trust Indicators -->
+            <div class="mt-16 flex flex-wrap justify-center items-center gap-8 md:gap-16">
+                <div class="flex items-center gap-3 text-slate-500">
+                    <i class="ph-fill ph-google-logo text-3xl"></i>
+                    <div>
+                        <div class="font-bold text-brand-dark">4.9/5</div>
+                        <div class="text-sm">120+ avis Google</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 text-slate-500">
+                    <i class="ph-fill ph-facebook-logo text-3xl text-blue-600"></i>
+                    <div>
+                        <div class="font-bold text-brand-dark">4.8/5</div>
+                        <div class="text-sm">85+ recommandations</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 text-slate-500">
+                    <i class="ph-fill ph-seal-check text-3xl text-green-500"></i>
+                    <div>
+                        <div class="font-bold text-brand-dark">100%</div>
+                        <div class="text-sm">Clients satisfaits</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Request Form avec design premium -->
+    <section id="custom-request" class="py-28 relative overflow-hidden">
+        <!-- Background Gradient moderne -->
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-brand-dark z-0"></div>
+        
+        <!-- Decorative blobs améliorés -->
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-blue/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 float-animation"></div>
+        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-brand-orange/15 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 float-animation" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-brand-red/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center mb-6 px-6 py-2.5 rounded-full border border-brand-orange/30 glass-effect">
+                    <span class="w-2 h-2 bg-brand-orange rounded-full mr-3 icon-pulse"></span>
+                    <span class="text-brand-orange font-bold tracking-widest uppercase text-sm">Service Premium</span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-extrabold mt-6 mb-6 text-white">
+                    Configurateur de <span class="text-gradient">Demande</span>
+                </h2>
+                <p class="text-slate-300 max-w-2xl mx-auto text-lg leading-relaxed">
+                    Dites-nous tout. Que ce soit pour un achat ou une location, nous activons notre réseau pour satisfaire votre demande.
+                </p>
+            </div>
+
+            <div class="glass-effect backdrop-blur-2xl border-2 border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl hover:border-white/20 transition-all duration-500">
+                
+                <!-- Barre de progression -->
+                <div class="flex items-center justify-between mb-12">
+                    <div class="flex-1 flex items-center justify-between relative">
+                        <div class="progress-step completed flex flex-col items-center" data-step="1">
+                            <div class="w-12 h-12 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-lg mb-2 shadow-lg">
+                                1
+                            </div>
+                            <span class="text-xs text-white font-semibold">Type</span>
+                        </div>
+                        <div class="progress-step flex flex-col items-center" data-step="2">
+                            <div class="w-12 h-12 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center font-bold text-lg mb-2">
+                                2
+                            </div>
+                            <span class="text-xs text-slate-400 font-semibold">Critères</span>
+                        </div>
+                        <div class="progress-step flex flex-col items-center" data-step="3">
+                            <div class="w-12 h-12 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center font-bold text-lg mb-2">
+                                3
+                            </div>
+                            <span class="text-xs text-slate-400 font-semibold">Coordonnées</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="requestForm" onsubmit="handleRequestSubmit(event)">
+                    
+                    <!-- Étape 1: Type de demande -->
+                    <div class="form-step active" data-step="1">
+                    <h3 class="text-2xl font-bold text-white mb-6 text-center">Quel est votre projet ?</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <label class="cursor-pointer group">
+                            <input type="radio" name="requestType" value="achat" class="peer sr-only" checked>
+                            <div class="h-full p-6 rounded-2xl bg-slate-800/50 border-2 border-transparent hover:border-brand-orange/50 peer-checked:border-brand-orange peer-checked:bg-slate-800 transition-all flex flex-col items-center justify-center text-center">
+                                <div class="w-16 h-16 rounded-full bg-brand-orange/20 text-brand-orange flex items-center justify-center mb-4 text-3xl peer-checked:bg-brand-orange peer-checked:text-white transition-colors">
+                                    <i class="ph-fill ph-currency-eur"></i>
+                                </div>
+                                <span class="text-xl font-bold text-white mb-2">Achat</span>
+                                <span class="text-sm text-slate-400">Neuf ou Occasion</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer group">
+                            <input type="radio" name="requestType" value="location" class="peer sr-only">
+                            <div class="h-full p-6 rounded-2xl bg-slate-800/50 border-2 border-transparent hover:border-brand-blue/50 peer-checked:border-brand-blue peer-checked:bg-slate-800 transition-all flex flex-col items-center justify-center text-center">
+                                <div class="w-16 h-16 rounded-full bg-brand-blue/20 text-brand-blue flex items-center justify-center mb-4 text-3xl peer-checked:bg-brand-blue peer-checked:text-white transition-colors">
+                                    <i class="ph-fill ph-calendar-check"></i>
+                                </div>
+                                <span class="text-xl font-bold text-white mb-2">Location</span>
+                                <span class="text-sm text-slate-400">Courte ou Longue durée</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer group">
+                            <input type="radio" name="requestType" value="vente" class="peer sr-only">
+                            <div class="h-full p-6 rounded-2xl bg-slate-800/50 border-2 border-transparent hover:border-brand-red/50 peer-checked:border-brand-red peer-checked:bg-slate-800 transition-all flex flex-col items-center justify-center text-center">
+                                <div class="w-16 h-16 rounded-full bg-brand-red/20 text-brand-red flex items-center justify-center mb-4 text-3xl peer-checked:bg-brand-red peer-checked:text-white transition-colors">
+                                    <i class="ph-fill ph-car-profile"></i>
+                                </div>
+                                <span class="text-xl font-bold text-white mb-2">Vente / Reprise</span>
+                                <span class="text-sm text-slate-400">Estimation gratuite</span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <button type="button" onclick="nextStep()" class="w-full bg-brand-gradient hover:opacity-90 text-white text-lg font-bold py-5 rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3">
+                        Continuer
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </button>
+                    </div>
+
+                    <!-- Étape 2: Critères -->
+                    <div class="form-step" data-step="2">
+                    <h3 class="text-2xl font-bold text-white mb-6 text-center">Vos critères de recherche</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">Catégorie souhaitée</label>
+                                <div class="relative">
+                                    <i class="ph-bold ph-car absolute left-4 top-3.5 text-slate-400 text-lg"></i>
+                                    <select class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue appearance-none transition-colors">
+                                        <option>Toutes catégories</option>
+                                        <option>SUV / 4x4</option>
+                                        <option>Berline</option>
+                                        <option>Citadine</option>
+                                        <option>Utilitaire</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">Budget Max / Loyer</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-3.5 text-slate-400 font-bold">€</span>
+                                    <input type="number" placeholder="Ex: 25000" class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors placeholder-slate-600">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">Marque</label>
+                                <div class="relative">
+                                    <i class="ph-bold ph-tag absolute left-4 top-3.5 text-slate-400 text-lg"></i>
+                                    <select class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue appearance-none transition-colors">
+                                        <option value="">Sélectionner une marque</option>
+                                        <option value="Peugeot">Peugeot</option>
+                                        <option value="Renault">Renault</option>
+                                        <option value="Citroën">Citroën</option>
+                                        <option value="Volkswagen">Volkswagen</option>
+                                        <option value="BMW">BMW</option>
+                                        <option value="Mercedes">Mercedes</option>
+                                        <option value="Audi">Audi</option>
+                                        <option value="Ford">Ford</option>
+                                        <option value="Toyota">Toyota</option>
+                                        <option value="Fiat">Fiat</option>
+                                        <option value="Nissan">Nissan</option>
+                                        <option value="Kia">Kia</option>
+                                        <option value="Hyundai">Hyundai</option>
+                                        <option value="Opel">Opel</option>
+                                        <option value="Dacia">Dacia</option>
+                                        <option value="Seat">Seat</option>
+                                        <option value="Skoda">Skoda</option>
+                                        <option value="Volvo">Volvo</option>
+                                        <option value="Mini">Mini</option>
+                                        <option value="Land Rover">Land Rover</option>
+                                        <option value="Jeep">Jeep</option>
+                                        <option value="Porsche">Porsche</option>
+                                        <option value="Autre">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">Modèle</label>
+                                <div class="relative">
+                                    <i class="ph-bold ph-car-profile absolute left-4 top-3.5 text-slate-400 text-lg"></i>
+                                    <input type="text" placeholder="Ex: Clio, A3, 3008..." class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors placeholder-slate-600">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">Boîte de vitesse</label>
+                                <div class="relative">
+                                    <i class="ph-bold ph-gear absolute left-4 top-3.5 text-slate-400 text-lg"></i>
+                                    <select class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue appearance-none transition-colors">
+                                        <option>Peu importe</option>
+                                        <option>Automatique</option>
+                                        <option>Manuelle</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" onclick="prevStep()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-5 rounded-2xl transition-all flex items-center justify-center gap-2">
+                            <i class="ph-bold ph-arrow-left"></i>
+                            Retour
+                        </button>
+                        <button type="button" onclick="nextStep()" class="bg-brand-gradient hover:opacity-90 text-white font-bold py-5 rounded-2xl transition-all flex items-center justify-center gap-2">
+                            Continuer
+                            <i class="ph-bold ph-arrow-right"></i>
+                        </button>
+                    </div>
+                    </div>
+
+                    <!-- Étape 3: Coordonnées -->
+                    <div class="form-step" data-step="3">
+                    <h3 class="text-2xl font-bold text-white mb-6 text-center">Vos coordonnées</h3>
+                    <div class="border-t border-white/10 pt-8">
+                        <h4 class="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                            <i class="ph-fill ph-user-circle text-brand-orange"></i> Vos Coordonnées
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <input type="text" required placeholder="Nom complet" class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange placeholder-slate-500">
+                            </div>
+                            <div>
+                                <input type="email" required placeholder="Email" class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange placeholder-slate-500">
+                            </div>
+                            <div>
+                                <input type="tel" required placeholder="Téléphone" class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange placeholder-slate-500">
+                            </div>
+                            <div class="md:col-span-3">
+                                <textarea rows="3" class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange placeholder-slate-500" placeholder="Précisions supplémentaires (Couleur, Kilométrage max, options obligatoires...)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 grid grid-cols-2 gap-4">
+                        <button type="button" onclick="prevStep()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-5 rounded-2xl transition-all flex items-center justify-center gap-2">
+                            <i class="ph-bold ph-arrow-left"></i>
+                            Retour
+                        </button>
+                        <button type="submit" class="bg-brand-gradient hover:opacity-90 text-white text-lg font-bold py-5 rounded-2xl transition-all shadow-2xl shadow-brand-red/40 flex items-center justify-center gap-3 transform hover:-translate-y-2 hover:shadow-brand-red/60 btn-glow relative overflow-hidden">
+                            <span class="relative z-10">Envoyer</span>
+                            <i class="ph-bold ph-paper-plane-right text-xl relative z-10"></i>
+                        </button>
+                    </div>
+                    <p class="text-center text-slate-400 text-sm mt-4">
+                        <i class="ph-fill ph-lock-simple text-brand-orange"></i> Vos données sont sécurisées et confidentielles
+                    </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Premium -->
+    <footer class="relative bg-gradient-to-br from-brand-dark via-slate-900 to-brand-dark overflow-hidden" id="contact">
+        <!-- Decorative top border -->
+        <div class="absolute top-0 left-0 right-0 h-1 bg-brand-gradient"></div>
+        
+        <!-- Decorative blobs -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-blue/10 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-orange/10 rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2"></div>
+        
+        <!-- Pre-Footer CTA -->
+        <div class="relative z-10 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-8 bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-white/10">
+                    <div class="text-center lg:text-left">
+                        <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">Prêt à trouver votre véhicule idéal ?</h3>
+                        <p class="text-slate-400">Contactez-nous dès maintenant pour une expérience personnalisée</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="tel:0123456789" class="group flex items-center gap-3 bg-brand-gradient text-white font-bold px-8 py-4 rounded-2xl hover:opacity-90 transition-all shadow-lg">
+                            <i class="ph-fill ph-phone text-xl"></i>
+                            <span>01 23 45 67 89</span>
+                        </a>
+                        <button onclick="scrollToSection('custom-request')" class="flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-2xl transition-all border border-white/20">
+                            <i class="ph-fill ph-envelope text-xl"></i>
+                            <span>Nous contacter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Footer -->
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-16">
+                <!-- Brand Column -->
+                <div class="lg:col-span-1">
+                    <img src="unnamed.png" alt="Central Auto B Logo" class="h-28 w-auto mb-6 object-contain brightness-0 invert">
+                    <p class="text-slate-400 text-sm leading-relaxed mb-8">
+                        Votre partenaire de confiance pour l'achat, la vente et la location de véhicules. Expertise, transparence et satisfaction client depuis plus de 10 ans.
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-brand-blue hover:text-white transition-all duration-300 border border-white/10 hover:border-brand-blue hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-facebook-logo text-xl"></i>
+                        </a>
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-gradient-to-br hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 border border-white/10 hover:border-pink-500 hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-instagram-logo text-xl"></i>
+                        </a>
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-brand-blue hover:text-white transition-all duration-300 border border-white/10 hover:border-brand-blue hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-linkedin-logo text-xl"></i>
+                        </a>
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-red-500 hover:text-white transition-all duration-300 border border-white/10 hover:border-red-500 hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-youtube-logo text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Services Column -->
+                <div>
+                    <h4 class="font-bold text-white mb-6 text-lg flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-orange/20 flex items-center justify-center">
+                            <i class="ph-bold ph-wrench text-brand-orange text-sm"></i>
+                        </div>
+                        Services
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Achat Neuf & Occasion
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Location de véhicules
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Reprise Cash Immédiate
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Recherche Personnalisée
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Financement sur-mesure
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Plaques d'immatriculation
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- Horaires Column -->
+                <div>
+                    <h4 class="font-bold text-white mb-6 text-lg flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-blue/20 flex items-center justify-center">
+                            <i class="ph-bold ph-clock text-brand-blue text-sm"></i>
+                        </div>
+                        Horaires
+                    </h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-400">Lundi - Vendredi</span> 
+                            <span class="font-bold text-brand-orange">09h - 19h</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-400">Samedi</span> 
+                            <span class="font-bold text-brand-orange">09h - 18h</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-400">Dimanche</span> 
+                            <span class="text-brand-red font-bold">Fermé</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                        <div class="flex items-center gap-2 text-green-400 font-semibold text-sm">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            Ouvert maintenant
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Column -->
+                <div>
+                    <h4 class="font-bold text-white mb-6 text-lg flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-red/20 flex items-center justify-center">
+                            <i class="ph-bold ph-chat-circle text-brand-red text-sm"></i>
+                        </div>
+                        Contact
+                    </h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#" class="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-brand-blue/50 transition-all">
+                                <div class="w-12 h-12 rounded-xl bg-brand-blue/20 text-brand-blue flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-map-pin text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-white font-semibold text-sm">Adresse</span>
+                                    <p class="text-slate-400 text-sm mt-1">123 Avenue de l'Automobile,<br>75000 Paris</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:0123456789" class="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-brand-orange/50 transition-all">
+                                <div class="w-12 h-12 rounded-xl bg-brand-orange/20 text-brand-orange flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-phone text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-white font-semibold text-sm">Téléphone</span>
+                                    <p class="text-brand-orange font-bold text-lg mt-1">01 23 45 67 89</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:contact@centralautob.fr" class="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-brand-red/50 transition-all">
+                                <div class="w-12 h-12 rounded-xl bg-brand-red/20 text-brand-red flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-envelope text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-white font-semibold text-sm">Email</span>
+                                    <p class="text-slate-400 text-sm mt-1">contact@centralautob.fr</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Trust Badges -->
+            <div class="border-t border-white/10 pt-10 mb-10">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-green-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-shield-check text-green-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Paiement</p>
+                            <p class="text-xs text-slate-400">100% sécurisé</p>
+                        </div>
+                    </div>
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-blue-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-medal text-blue-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Garantie</p>
+                            <p class="text-xs text-slate-400">Satisfait ou remboursé</p>
+                        </div>
+                    </div>
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-orange-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-headset text-orange-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Support</p>
+                            <p class="text-xs text-slate-400">7j/7 à votre écoute</p>
+                        </div>
+                    </div>
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-purple-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-truck text-purple-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Livraison</p>
+                            <p class="text-xs text-slate-400">Partout en France</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/10">
+                <p class="text-sm text-slate-500">© 2024 Central Auto B. Tous droits réservés.</p>
+                <div class="flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-brand-orange transition-colors">Mentions légales</a>
+                    <a href="#" class="hover:text-brand-orange transition-colors">Politique de confidentialité</a>
+                    <a href="#" class="hover:text-brand-orange transition-colors">CGV</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Détails Véhicule -->
+    <div id="carModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <!-- Header Modal avec Carrousel -->
+            <div class="relative">
+                <!-- Image principale -->
+                <img id="modalImage" src="" alt="" class="w-full h-80 object-cover rounded-t-3xl transition-all duration-300">
+                
+                <!-- Boutons navigation carrousel -->
+                <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg">
+                    <i class="ph-bold ph-caret-left text-2xl text-slate-700"></i>
+                </button>
+                <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg">
+                    <i class="ph-bold ph-caret-right text-2xl text-slate-700"></i>
+                </button>
+                
+                <!-- Indicateurs -->
+                <div id="imageIndicators" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                </div>
+                
+                <button onclick="closeCarModal()" class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition-all shadow-lg z-10">
+                    <i class="ph-bold ph-x text-2xl text-slate-700"></i>
+                </button>
+                <div id="modalBadge" class="absolute top-4 left-4 px-4 py-2 rounded-full text-white text-sm font-bold uppercase tracking-wide shadow-lg backdrop-blur-sm">
+                </div>
+            </div>
+
+            <!-- Body Modal -->
+            <div class="p-8">
+                <!-- Titre et Prix -->
+                <div class="flex justify-between items-start mb-6 pb-6 border-b-2 border-slate-100">
+                    <div>
+                        <h2 id="modalMake" class="text-3xl font-extrabold text-brand-dark mb-2"></h2>
+                        <p id="modalModel" class="text-xl text-slate-600 font-medium"></p>
+                        <p id="modalYear" class="text-slate-500 mt-1"></p>
+                    </div>
+                    <div class="text-right">
+                        <p id="modalPrice" class="text-4xl font-extrabold"></p>
+                    </div>
+                </div>
+
+                <!-- Caractéristiques -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-brand-dark mb-4 flex items-center gap-2">
+                        <i class="ph-fill ph-list-checks text-brand-blue"></i>
+                        Caractéristiques
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+                            <div class="w-12 h-12 bg-brand-orange/20 rounded-xl flex items-center justify-center">
+                                <i class="ph-fill ph-gas-pump text-brand-orange text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold uppercase">Carburant</p>
+                                <p id="modalFuel" class="text-sm font-bold text-slate-800"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+                            <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center">
+                                <i class="ph-fill ph-gear text-brand-blue text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-semibold uppercase">Transmission</p>
+                                <p id="modalTransmission" class="text-sm font-bold text-slate-800"></p>
+                            </div>
+                        </div>
+                        <div id="modalExtraContainer" class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl">
+                            <div class="w-12 h-12 bg-brand-red/20 rounded-xl flex items-center justify-center">
+                                <i id="modalExtraIcon" class="ph-fill text-brand-red text-xl"></i>
+                            </div>
+                            <div>
+                                <p id="modalExtraLabel" class="text-xs text-slate-500 font-semibold uppercase"></p>
+                                <p id="modalExtraValue" class="text-sm font-bold text-slate-800"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rental Simulator (Hidden by default) -->
+                    <div id="rentalSimulator" class="hidden mt-6 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <h4 class="text-lg font-bold text-brand-dark mb-4 flex items-center gap-2">
+                            <i class="ph-fill ph-calculator text-brand-blue"></i>
+                            Simulateur de Location
+                        </h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-2">Durée (jours)</label>
+                                <div class="flex items-center gap-4">
+                                    <button onclick="adjustDuration(-1)" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
+                                        <i class="ph-bold ph-minus"></i>
+                                    </button>
+                                    <input type="number" id="simDuration" value="1" min="1" class="w-20 text-center font-bold text-lg bg-transparent border-none focus:ring-0 p-0" onchange="updateRentalTotal()">
+                                    <button onclick="adjustDuration(1)" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
+                                        <i class="ph-bold ph-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-slate-200 flex justify-between items-end">
+                                <span class="text-sm font-medium text-slate-500">Total estimé</span>
+                                <span id="simTotal" class="text-3xl font-extrabold text-brand-blue">0 €</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="contactAboutCar()" class="flex-1 bg-brand-gradient text-white font-bold py-4 rounded-xl hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-3 hover:-translate-y-1 transform duration-300">
+                        <i class="ph-bold ph-phone text-xl"></i>
+                        <span>Contacter pour ce véhicule</span>
+                    </button>
+                    <button onclick="closeCarModal()" class="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton retour en haut -->
+    <button id="scrollToTop" class="fixed bottom-8 right-8 bg-brand-gradient text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 z-50" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="ph-bold ph-arrow-up text-2xl"></i>
+    </button>
+
+    <!-- Notification Toast modernisé -->
+    <div id="toast" class="fixed bottom-8 right-24 bg-white border-l-4 border-green-500 text-slate-800 px-6 py-5 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-500 z-50 flex items-center gap-4 max-w-md">
+        <div class="bg-gradient-to-br from-green-100 to-green-50 p-4 rounded-xl text-green-600 shadow-lg">
+            <i class="ph-bold ph-check-circle text-2xl"></i>
+        </div>
+        <div>
+            <h4 class="font-bold text-lg text-brand-dark mb-1">Demande envoyée !</h4>
+            <p class="text-sm text-slate-600">Un conseiller Central Auto B vous recontactera très rapidement.</p>
+        </div>
+        <button onclick="document.getElementById('toast').classList.add('translate-y-20', 'opacity-0')" class="ml-2 text-slate-400 hover:text-slate-600 transition-colors">
+            <i class="ph-bold ph-x text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Modal Exit-Intent - Offre Spéciale -->
+    <div id="exitModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto">
+        <div id="exitModalContent" class="bg-white rounded-2xl md:rounded-3xl max-w-2xl w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-500 overflow-hidden my-auto max-h-[90vh] overflow-y-auto">
+            <!-- Header avec gradient -->
+            <div class="bg-gradient-to-r from-brand-orange via-brand-red to-brand-blue p-4 md:p-8 text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-24 -translate-x-24"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                        <div class="bg-white/20 backdrop-blur-sm p-2 md:p-3 rounded-xl md:rounded-2xl">
+                            <i class="ph-fill ph-gift text-2xl md:text-4xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-white/90 font-semibold uppercase tracking-wider text-xs md:text-sm">Ne partez pas !</p>
+                            <h3 class="text-xl md:text-3xl font-extrabold">Offre Exclusive</h3>
+                        </div>
+                    </div>
+                    <p class="text-base md:text-xl font-medium text-white/95">Bénéficiez de <span class="text-2xl md:text-4xl font-black">-500€</span> sur votre prochain achat</p>
+                </div>
+                <button type="button" onclick="closeExitModal(); return false;" class="absolute top-3 right-3 md:top-6 md:right-6 w-8 h-8 md:w-10 md:h-10 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 hover:rotate-90 z-20">
+                    <i class="ph-bold ph-x text-lg md:text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-4 md:p-8">
+                <div class="mb-4 md:mb-6">
+                    <h4 class="text-lg md:text-2xl font-bold text-brand-dark mb-3 md:mb-4">🎁 Valable uniquement aujourd'hui !</h4>
+                    <ul class="space-y-2 md:space-y-3">
+                        <li class="flex items-start gap-3">
+                            <div class="bg-green-100 p-2 rounded-lg mt-0.5">
+                                <i class="ph-fill ph-check text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800">Réduction immédiate de 500€</p>
+                                <p class="text-sm text-slate-600">Sur tous nos véhicules en stock</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="bg-blue-100 p-2 rounded-lg mt-0.5">
+                                <i class="ph-fill ph-check text-blue-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800">Consultation gratuite</p>
+                                <p class="text-sm text-slate-600">Un expert vous guide dans votre choix</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="bg-orange-100 p-2 rounded-lg mt-0.5">
+                                <i class="ph-fill ph-check text-orange-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800">Garantie satisfait ou remboursé</p>
+                                <p class="text-sm text-slate-600">30 jours pour changer d'avis</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Formulaire simplifié -->
+                <form onsubmit="submitExitOffer(event)" class="space-y-3 md:space-y-4">
+                    <input type="email" placeholder="Votre email" required class="w-full px-4 md:px-6 py-3 md:py-4 border-2 border-slate-200 rounded-xl md:rounded-2xl focus:border-brand-orange focus:outline-none transition-colors font-medium text-sm md:text-base">
+                    <input type="tel" placeholder="Votre téléphone" required class="w-full px-4 md:px-6 py-3 md:py-4 border-2 border-slate-200 rounded-xl md:rounded-2xl focus:border-brand-orange focus:outline-none transition-colors font-medium text-sm md:text-base">
+                    
+                    <button type="submit" class="w-full bg-gradient-to-r from-brand-orange to-brand-red text-white font-bold py-4 md:py-5 px-6 md:px-8 rounded-xl md:rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-base md:text-lg">
+                        🎉 Je profite de l'offre -500€
+                    </button>
+                </form>
+
+                <p class="text-center text-xs text-slate-500 mt-3 md:mt-4">⏱️ Offre valable pour les 50 prochains visiteurs uniquement</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton Rappel Gratuit Flottant -->
+    <button id="callbackBtn" onclick="openCallbackModal()" class="fixed bottom-4 left-4 md:bottom-8 md:left-8 bg-gradient-to-r from-brand-orange to-brand-red text-white px-4 py-3 md:px-6 md:py-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 flex items-center gap-2 md:gap-3 font-bold z-40 animate-pulse-slow group">
+        <div class="bg-white/20 backdrop-blur-sm p-1.5 md:p-2 rounded-full group-hover:rotate-12 transition-transform">
+            <i class="ph-fill ph-phone text-xl md:text-2xl"></i>
+        </div>
+        <div class="text-left hidden sm:block">
+            <p class="text-xs font-semibold opacity-90">Rappel gratuit</p>
+            <p class="text-sm">sous 10 minutes</p>
+        </div>
+    </button>
+
+    <!-- Modal Rappel Gratuit -->
+    <div id="callbackModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+        <div id="callbackModalContent" class="bg-white rounded-2xl md:rounded-3xl max-w-md w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-500 overflow-hidden my-auto">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-brand-orange to-brand-red p-4 md:p-6 text-white relative">
+                <div class="flex items-center gap-2 md:gap-3">
+                    <div class="bg-white/20 backdrop-blur-sm p-2 md:p-3 rounded-xl md:rounded-2xl">
+                        <i class="ph-fill ph-phone-call text-2xl md:text-3xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-extrabold">Rappel Gratuit</h3>
+                        <p class="text-white/90 text-xs md:text-sm">Sous 10 minutes ⚡</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeCallbackModal(); return false;" class="absolute top-3 right-3 md:top-6 md:right-6 w-8 h-8 md:w-10 md:h-10 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 z-20">
+                    <i class="ph-bold ph-x text-base md:text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <form onsubmit="submitCallback(event)" class="p-4 md:p-6 space-y-3 md:space-y-4">
+                <div>
+                    <label class="block text-xs md:text-sm font-bold text-slate-700 mb-1.5 md:mb-2">Votre nom</label>
+                    <input type="text" placeholder="Jean Dupont" required class="w-full px-3 md:px-4 py-2.5 md:py-3 border-2 border-slate-200 rounded-lg md:rounded-xl focus:border-brand-orange focus:outline-none transition-colors text-sm md:text-base">
+                </div>
+                <div>
+                    <label class="block text-xs md:text-sm font-bold text-slate-700 mb-1.5 md:mb-2">Votre téléphone</label>
+                    <input type="tel" placeholder="06 12 34 56 78" required class="w-full px-3 md:px-4 py-2.5 md:py-3 border-2 border-slate-200 rounded-lg md:rounded-xl focus:border-brand-orange focus:outline-none transition-colors text-sm md:text-base">
+                </div>
+                <div>
+                    <label class="block text-xs md:text-sm font-bold text-slate-700 mb-1.5 md:mb-2">Meilleur créneau</label>
+                    <select class="w-full px-3 md:px-4 py-2.5 md:py-3 border-2 border-slate-200 rounded-lg md:rounded-xl focus:border-brand-orange focus:outline-none transition-colors text-sm md:text-base">
+                        <option>Maintenant (sous 10 min)</option>
+                        <option>Dans 1 heure</option>
+                        <option>Cet après-midi</option>
+                        <option>Demain matin</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-orange to-brand-red text-white font-bold py-3 md:py-4 px-5 md:px-6 rounded-lg md:rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 text-sm md:text-base">
+                    📞 Demander un rappel
+                </button>
+
+                <p class="text-center text-xs text-slate-500">Nous vous rappelons gratuitement dans le créneau choisi</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data - Mock Inventory avec plusieurs images par véhicule
+        const cars = [
+            {
+                id: 1,
+                make: "Renault",
+                model: "Clio V Esprit Alpine",
+                year: 2023,
+                price: "21 900 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Hybride",
+                transmission: "Auto",
+                mileage: "5 000 km",
+                urgencyBadge: { type: 'stock', value: 2 }, // Seulement 2 disponibles
+                images: [
+                    "https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1619405399517-d7fce0f13302?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 2,
+                make: "Peugeot",
+                model: "2008 GT",
+                year: 2022,
+                price: null,
+                rentPrice: "65 € /jour",
+                type: 'rent',
+                fuel: "Essence",
+                transmission: "Manuelle",
+                seats: "5 places",
+                urgencyBadge: { type: 'promo', hours: 48 }, // Prix réduit pour 48h
+                images: [
+                    "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 3,
+                make: "Audi",
+                model: "Q3 Sportback",
+                year: 2021,
+                price: "38 500 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Diesel",
+                transmission: "Auto",
+                mileage: "42 000 km",
+                urgencyBadge: { type: 'stock', value: 1 }, // Dernière disponible
+                images: [
+                    "https://images.unsplash.com/photo-1609521263047-f8f205293f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1606152421802-db97b9c7a11b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 4,
+                make: "Volkswagen",
+                model: "Golf 8",
+                year: 2023,
+                price: null,
+                rentPrice: "85 € /jour",
+                type: 'rent',
+                fuel: "Hybride",
+                transmission: "Auto",
+                seats: "5 places",
+                urgencyBadge: { type: 'promo', hours: 24 }, // Offre 24h
+                images: [
+                    "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 5,
+                make: "Toyota",
+                model: "C-HR GR Sport",
+                year: 2022,
+                price: "29 900 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Hybride",
+                transmission: "Auto",
+                mileage: "12 000 km",
+                urgencyBadge: { type: 'stock', value: 3 }, // Seulement 3 disponibles
+                images: [
+                    "https://images.unsplash.com/photo-1621361365424-06f0e1eb5c49?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1621007947382-bb3c3968e3bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1623874514711-0f321325f318?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                ]
+            },
+            {
+                id: 6,
+                make: "Fiat",
+                model: "500 Electrique",
+                year: 2023,
+                price: null,
+                rentPrice: "45 € /jour",
+                type: 'rent',
+                fuel: "Électrique",
+                transmission: "Auto",
+                seats: "4 places",
+                urgencyBadge: { type: 'lastchance' }, // Dernière chance
+                images: [
+                    "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    "https://images.unsplash.com/photo-1615906655593-ad0386982a0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                ]
+            }
+        ];
+
+        // Init
+        // document.addEventListener('DOMContentLoaded', () => {
+        //    renderCars('sale'); // Default view
+        // });
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Navbar scroll effect - désactivé pour garder hauteur fixe
+        let lastScroll = 0;
+        const navbar = document.getElementById('navbar');
+        
+        // Effet d'ombre au scroll uniquement
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Scroll Logic
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            if (!menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // Render cars for sale carousel
+        function renderCarsForSale() {
+            const carousel = document.getElementById('car-carousel-sale');
+            if (!carousel) return;
+            carousel.innerHTML = '';
+
+            const saleCars = cars.filter(car => car.type === 'sale');
+
+            saleCars.forEach((car, index) => {
+                const cardHTML = createCarCard(car, index);
+                carousel.innerHTML += cardHTML;
+            });
+        }
+
+        // Render cars for rent carousel
+        function renderCarsForRent() {
+            const carousel = document.getElementById('car-carousel-rent');
+            if (!carousel) return;
+            carousel.innerHTML = '';
+
+            const rentCars = cars.filter(car => car.type === 'rent');
+
+            rentCars.forEach((car, index) => {
+                const cardHTML = createCarCard(car, index);
+                carousel.innerHTML += cardHTML;
+            });
+        }
+
+        // Scroll carousel function
+        function scrollCarousel(type, direction) {
+            const carousel = document.getElementById(`car-carousel-${type}`);
+            if (!carousel) return;
+            
+            const cardWidth = carousel.querySelector('.carousel-card')?.offsetWidth || 400;
+            const scrollAmount = cardWidth + 24; // card width + gap
+            
+            if (direction === 'next') {
+                carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Create car card HTML
+        function createCarCard(car, index) {
+            let badgeClass = '';
+            let badgeText = '';
+            let priceColor = '';
+            
+            if (car.type === 'sale') {
+                badgeClass = 'bg-brand-orange';
+                badgeText = 'À Vendre';
+                priceColor = 'text-brand-blue';
+            } else {
+                badgeClass = 'bg-brand-blue';
+                badgeText = 'Location';
+                priceColor = 'text-brand-red';
+            }
+
+            const priceDisplay = car.type === 'sale' ? car.price : car.rentPrice;
+            const subDetail = car.type === 'sale' ? car.mileage : car.seats;
+            const subDetailIcon = car.type === 'sale' ? 'ph-gauge' : 'ph-users';
+            const mainImage = car.images ? car.images[0] : car.image;
+
+            // Badge d'urgence
+            let urgencyBadgeHTML = '';
+            if (car.urgencyBadge) {
+                if (car.urgencyBadge.type === 'stock') {
+                    const stockText = car.urgencyBadge.value === 1 ? 'Dernière disponible !' : `Seulement ${car.urgencyBadge.value} disponibles`;
+                    urgencyBadgeHTML = `
+                        <div class="absolute top-5 right-5 bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm animate-pulse flex items-center gap-2">
+                            <i class="ph-fill ph-warning-circle"></i>
+                            ${stockText}
+                        </div>
+                    `;
+                } else if (car.urgencyBadge.type === 'promo') {
+                    urgencyBadgeHTML = `
+                        <div class="absolute top-5 right-5 bg-gradient-to-r from-brand-orange to-brand-red text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm animate-pulse flex items-center gap-2">
+                            <i class="ph-fill ph-fire"></i>
+                            Prix réduit ${car.urgencyBadge.hours}h
+                        </div>
+                    `;
+                } else if (car.urgencyBadge.type === 'lastchance') {
+                    urgencyBadgeHTML = `
+                        <div class="absolute top-5 right-5 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm animate-pulse flex items-center gap-2">
+                            <i class="ph-fill ph-lightning"></i>
+                            Dernière chance !
+                        </div>
+                    `;
+                }
+            }
+
+            return `
+                <div class="carousel-card bg-white rounded-3xl shadow-lg border-2 border-slate-100 overflow-hidden car-card transition-all duration-500 fade-in group flex flex-col relative" style="animation-delay: ${index * 100}ms">
+                    <div class="relative h-72 overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <img src="${mainImage}" alt="${car.make} ${car.model}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <span class="absolute top-5 left-5 ${badgeClass} text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm">
+                            ${badgeText}
+                        </span>
+                        ${urgencyBadgeHTML}
+                        <div class="absolute bottom-5 right-5 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="ph-bold ph-heart text-brand-red text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-7 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-2xl font-extrabold text-brand-dark group-hover:text-brand-blue transition-colors">${car.make}</h3>
+                                <p class="text-slate-500 font-medium text-base">${car.model}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-extrabold ${priceColor}">${priceDisplay}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-3 mt-auto pt-5 border-t-2 border-slate-100 text-sm text-slate-600">
+                            <div class="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                <i class="ph-fill ph-gas-pump text-brand-orange text-xl"></i>
+                                <span class="font-semibold text-xs">${car.fuel}</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                <i class="ph-fill ph-gear text-brand-blue text-xl"></i>
+                                <span class="font-semibold text-xs">${car.transmission}</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                <i class="ph-fill ${subDetailIcon} text-brand-red text-xl"></i>
+                                <span class="font-semibold text-xs">${subDetail}</span>
+                            </div>
+                        </div>
+
+                        <button onclick="openCarModal(${car.id})" class="w-full mt-6 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-brand-blue hover:to-brand-blue text-white font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-1 transform relative overflow-hidden group/btn">
+                            <span class="relative z-10">Je suis intéressé</span>
+                            <i class="ph-bold ph-arrow-right relative z-10 group-hover/btn:translate-x-2 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize both grids
+        function initCarGrids() {
+            renderCarsForSale();
+            renderCarsForRent();
+        }
+
+        // Call on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initCarGrids();
+        });
+
+        // Variables pour le carrousel
+        let currentCar = null;
+        let currentImageIndex = 0;
+        let currentDailyRate = 0;
+
+        // Ouvrir le modal avec les détails de la voiture
+        function openCarModal(carId) {
+            const car = cars.find(c => c.id === carId);
+            if (!car) return;
+
+            currentCar = car;
+            currentImageIndex = 0;
+
+            // Afficher la première image
+            updateModalImage();
+            
+            document.getElementById('modalMake').textContent = car.make;
+            document.getElementById('modalModel').textContent = car.model;
+            document.getElementById('modalYear').textContent = `Année ${car.year}`;
+            document.getElementById('modalFuel').textContent = car.fuel;
+            document.getElementById('modalTransmission').textContent = car.transmission;
+
+            // Badge et prix selon le type
+            const badge = document.getElementById('modalBadge');
+            const price = document.getElementById('modalPrice');
+            const simulator = document.getElementById('rentalSimulator');
+            
+            if (car.type === 'sale') {
+                badge.className = 'absolute top-4 left-4 px-4 py-2 rounded-full text-white text-sm font-bold uppercase tracking-wide shadow-lg backdrop-blur-sm bg-brand-orange';
+                badge.textContent = 'À Vendre';
+                price.className = 'text-4xl font-extrabold text-brand-blue';
+                price.textContent = car.price;
+                
+                document.getElementById('modalExtraLabel').textContent = 'Kilométrage';
+                document.getElementById('modalExtraValue').textContent = car.mileage;
+                document.getElementById('modalExtraIcon').className = 'ph-fill ph-gauge text-brand-red text-xl';
+                
+                simulator.classList.add('hidden');
+            } else {
+                badge.className = 'absolute top-4 left-4 px-4 py-2 rounded-full text-white text-sm font-bold uppercase tracking-wide shadow-lg backdrop-blur-sm bg-brand-blue';
+                badge.textContent = 'Location';
+                price.className = 'text-4xl font-extrabold text-brand-red';
+                price.textContent = car.rentPrice;
+                
+                document.getElementById('modalExtraLabel').textContent = 'Places';
+                document.getElementById('modalExtraValue').textContent = car.seats;
+                document.getElementById('modalExtraIcon').className = 'ph-fill ph-users text-brand-red text-xl';
+                
+                // Setup Simulator
+                simulator.classList.remove('hidden');
+                currentDailyRate = parseInt(car.rentPrice.replace(/[^0-9]/g, ''));
+                document.getElementById('simDuration').value = 1;
+                updateRentalTotal();
+            }
+
+            // Afficher le modal avec animation
+            const modal = document.getElementById('carModal');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Animation d'entrée
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            // Bloquer le scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function adjustDuration(change) {
+            const input = document.getElementById('simDuration');
+            let val = parseInt(input.value) + change;
+            if (val < 1) val = 1;
+            input.value = val;
+            updateRentalTotal();
+        }
+
+        function updateRentalTotal() {
+            const duration = parseInt(document.getElementById('simDuration').value) || 1;
+            const total = duration * currentDailyRate;
+            document.getElementById('simTotal').textContent = total + ' €';
+        }
+
+        // Mettre à jour l'image du modal
+        function updateModalImage() {
+            if (!currentCar) return;
+            
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = currentCar.images[currentImageIndex];
+            modalImage.alt = `${currentCar.make} ${currentCar.model} - Photo ${currentImageIndex + 1}`;
+            
+            // Mettre à jour les indicateurs
+            const indicators = document.getElementById('imageIndicators');
+            indicators.innerHTML = currentCar.images.map((_, index) => `
+                <div class="w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentImageIndex 
+                        ? 'bg-brand-orange w-6' 
+                        : 'bg-gray-400'
+                }"></div>
+            `).join('');
+        }
+
+        // Navigation carrousel - image précédente
+        function prevImage() {
+            if (!currentCar) return;
+            currentImageIndex = (currentImageIndex - 1 + currentCar.images.length) % currentCar.images.length;
+            updateModalImage();
+        }
+
+        // Navigation carrousel - image suivante
+        function nextImage() {
+            if (!currentCar) return;
+            currentImageIndex = (currentImageIndex + 1) % currentCar.images.length;
+            updateModalImage();
+        }
+
+        // Fermer le modal
+        function closeCarModal() {
+            const modal = document.getElementById('carModal');
+            const content = document.getElementById('modalContent');
+            
+            // Animation de sortie
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+
+            // Débloquer le scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Contacter pour un véhicule spécifique
+        function contactAboutCar() {
+            const make = document.getElementById('modalMake').textContent;
+            const model = document.getElementById('modalModel').textContent;
+            
+            closeCarModal();
+            scrollToSection('custom-request');
+            
+            // Pré-remplir le formulaire
+            setTimeout(() => {
+                const input = document.querySelector('input[placeholder*="Renault Clio"]');
+                if(input) {
+                    input.value = `${make} ${model}`;
+                    input.focus();
+                }
+            }, 500);
+        }
+
+        // Fermer le modal en cliquant sur le fond
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('carModal');
+            if (e.target === modal) {
+                closeCarModal();
+            }
+        });
+
+        // Animations au scroll avec Intersection Observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        // Observer tous les éléments avec scroll-reveal
+        document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right').forEach(el => {
+            scrollObserver.observe(el);
+        });
+
+        // Animation des compteurs
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000; // 2 secondes
+            const step = target / (duration / 16); // 60fps
+            let current = 0;
+
+            const updateCounter = () => {
+                current += step;
+                if (current < target) {
+                    element.textContent = Math.floor(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target;
+                }
+            };
+
+            updateCounter();
+        }
+
+        // Observer pour les compteurs
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                    entry.target.classList.add('counted');
+                    animateCounter(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Observer tous les compteurs
+        document.querySelectorAll('.counter').forEach(counter => {
+            counterObserver.observe(counter);
+        });
+
+        // Exit Intent Modal - Multiple triggers
+        // Vérifier si le modal a déjà été affiché dans les dernières 24h
+        const lastShown = localStorage.getItem('exitModalShownTime');
+        let exitModalShown = false;
+
+        if (lastShown) {
+            const timeSince = new Date().getTime() - parseInt(lastShown);
+            // 24 heures = 86400000 ms
+            if (timeSince < 86400000) {
+                exitModalShown = true;
+            }
+        }
+        
+        // Méthode 1: Détecter le mouvement de souris vers le haut de la page
+        document.addEventListener('mousemove', (e) => {
+            // Si la souris est en haut de la page (moins de 50px) et se déplace vers le haut
+            if (e.clientY < 50 && !exitModalShown) {
+                exitModalShown = true;
+                openExitModal();
+            }
+        });
+        
+        // Méthode 2: Détecter quand la souris quitte le document par le haut
+        document.addEventListener('mouseleave', (e) => {
+            if (e.clientY <= 0 && !exitModalShown) {
+                exitModalShown = true;
+                openExitModal();
+            }
+        });
+        
+        // Méthode 3: Après 60 secondes sur la page
+        setTimeout(() => {
+            if (!exitModalShown) {
+                exitModalShown = true;
+                openExitModal();
+            }
+        }, 60000);
+
+        function openExitModal() {
+            // Enregistrer l'affichage dans le localStorage
+            localStorage.setItem('exitModalShownTime', new Date().getTime().toString());
+
+            const modal = document.getElementById('exitModal');
+            const content = document.getElementById('exitModalContent');
+            
+            if (!modal || !content) {
+                return;
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeExitModal() {
+            const modal = document.getElementById('exitModal');
+            const content = document.getElementById('exitModalContent');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            document.body.style.overflow = 'auto';
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function submitExitOffer(e) {
+            e.preventDefault();
+            closeExitModal();
+            showToast('Offre activée ! Nous vous contactons sous 24h 🎉');
+            e.target.reset();
+        }
+
+        // Fermer les modals en cliquant sur le fond
+        document.addEventListener('click', (e) => {
+            const exitModal = document.getElementById('exitModal');
+            const callbackModal = document.getElementById('callbackModal');
+            
+            if (e.target === exitModal) {
+                closeExitModal();
+            }
+            
+            if (e.target === callbackModal) {
+                closeCallbackModal();
+            }
+        });
+        
+        // Fermer avec la touche Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const exitModal = document.getElementById('exitModal');
+                const callbackModal = document.getElementById('callbackModal');
+                
+                if (exitModal && !exitModal.classList.contains('hidden')) {
+                    closeExitModal();
+                }
+                
+                if (callbackModal && !callbackModal.classList.contains('hidden')) {
+                    closeCallbackModal();
+                }
+            }
+        });
+
+        // Modal Rappel Gratuit
+        function openCallbackModal() {
+            const modal = document.getElementById('callbackModal');
+            const content = document.getElementById('callbackModalContent');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeCallbackModal() {
+            const modal = document.getElementById('callbackModal');
+            const content = document.getElementById('callbackModalContent');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function submitCallback(e) {
+            e.preventDefault();
+            closeCallbackModal();
+            showToast('Demande enregistrée ! Nous vous appelons dans quelques minutes 📞');
+            e.target.reset();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const messageEl = toast.querySelector('p');
+            messageEl.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 4000);
+        }
+
+        // Gestion du formulaire multi-étapes
+        let currentFormStep = 1;
+        const totalSteps = 3;
+
+        function updateProgressBar() {
+            const steps = document.querySelectorAll('.progress-step');
+            steps.forEach((step, index) => {
+                const stepNum = index + 1;
+                const circle = step.querySelector('div');
+                const label = step.querySelector('span');
+                
+                if (stepNum < currentFormStep) {
+                    // Étape complétée
+                    step.classList.add('completed');
+                    circle.classList.remove('bg-slate-700');
+                    circle.classList.add('bg-brand-orange');
+                    circle.classList.remove('text-slate-400');
+                    circle.classList.add('text-white');
+                    label.classList.remove('text-slate-400');
+                    label.classList.add('text-white');
+                } else if (stepNum === currentFormStep) {
+                    // Étape active
+                    step.classList.remove('completed');
+                    circle.classList.remove('bg-slate-700');
+                    circle.classList.add('bg-brand-blue');
+                    circle.classList.remove('text-slate-400');
+                    circle.classList.add('text-white');
+                    label.classList.remove('text-slate-400');
+                    label.classList.add('text-brand-blue');
+                } else {
+                    // Étape future
+                    step.classList.remove('completed');
+                    circle.classList.remove('bg-brand-orange', 'bg-brand-blue');
+                    circle.classList.add('bg-slate-700');
+                    circle.classList.remove('text-white');
+                    circle.classList.add('text-slate-400');
+                    label.classList.remove('text-white', 'text-brand-blue');
+                    label.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        function showStep(stepNumber) {
+            const steps = document.querySelectorAll('.form-step');
+            steps.forEach(step => {
+                step.classList.remove('active');
+                if (parseInt(step.dataset.step) === stepNumber) {
+                    step.classList.add('active');
+                }
+            });
+            currentFormStep = stepNumber;
+            updateProgressBar();
+        }
+
+        function nextStep() {
+            if (currentFormStep < totalSteps) {
+                showStep(currentFormStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentFormStep > 1) {
+                showStep(currentFormStep - 1);
+            }
+        }
+
+        // Initialiser la barre de progression au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgressBar();
+        });
+
+        // Gestion du bouton scroll to top
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+                scrollToTopBtn.classList.add('opacity-100', 'pointer-events-auto');
+            } else {
+                scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+                scrollToTopBtn.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+        });
+
+        // Form Submit Handler
+        function handleRequestSubmit(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            // Loading state
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-2xl"></i> Traitement...';
+
+            // Simulate API call
+            setTimeout(() => {
+                // Reset button
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                
+                // Show toast
+                const toast = document.getElementById('toast');
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                
+                // Reset form
+                e.target.reset();
+
+                // Hide toast after 4s
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 4000);
+            }, 1500);
+        }
+
+        // Simulator Functions
+        function switchSimulator(type) {
+            const regTab = document.getElementById('tab-registration');
+            const finTab = document.getElementById('tab-financing');
+            const regContent = document.getElementById('sim-registration');
+            const finContent = document.getElementById('sim-financing');
+
+            if (type === 'registration') {
+                regTab.classList.add('text-brand-blue', 'border-b-2', 'border-brand-blue', 'bg-brand-blue/5');
+                regTab.classList.remove('text-slate-500');
+                finTab.classList.remove('text-brand-blue', 'border-b-2', 'border-brand-blue', 'bg-brand-blue/5');
+                finTab.classList.add('text-slate-500');
+                
+                regContent.classList.remove('hidden');
+                finContent.classList.add('hidden');
+            } else {
+                finTab.classList.add('text-brand-blue', 'border-b-2', 'border-brand-blue', 'bg-brand-blue/5');
+                finTab.classList.remove('text-slate-500');
+                regTab.classList.remove('text-brand-blue', 'border-b-2', 'border-brand-blue', 'bg-brand-blue/5');
+                regTab.classList.add('text-slate-500');
+                
+                finContent.classList.remove('hidden');
+                regContent.classList.add('hidden');
+            }
+        }
+
+        function calculateRegistration() {
+            const cv = parseFloat(document.getElementById('reg-cv').value) || 0;
+            const regionPrice = parseFloat(document.getElementById('reg-region').value) || 45;
+            const energy = document.getElementById('reg-energy').value;
+            
+            let total = cv * regionPrice;
+            
+            // Exonération pour véhicules propres (électrique, hybride selon région)
+            // Simplification: 100% exonération pour électrique
+            if (energy === 'electric') {
+                total = 0;
+            }
+            
+            // Frais de gestion et d'acheminement
+            total += 11 + 2.76;
+            
+            document.getElementById('reg-result').textContent = total.toFixed(2).replace('.', ',') + ' €';
+        }
+
+        function calculateFinancing() {
+            const price = parseFloat(document.getElementById('fin-price').value) || 0;
+            const deposit = parseFloat(document.getElementById('fin-deposit').value) || 0;
+            const duration = parseInt(document.getElementById('fin-duration').value) || 48;
+            const rate = parseFloat(document.getElementById('fin-rate').value) || 4.9;
+            
+            const amount = price - deposit;
+            if (amount <= 0) {
+                document.getElementById('fin-result').textContent = '0,00 €';
+                return;
+            }
+            
+            const monthlyRate = rate / 100 / 12;
+            const monthlyPayment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -duration));
+            
+            document.getElementById('fin-result').textContent = monthlyPayment.toFixed(2).replace('.', ',') + ' €';
+        }
+
+        // Navigation Active State Management
+        function updateActiveNavLink() {
+            const path = window.location.pathname;
+            const hash = window.location.hash;
+            const search = window.location.search;
+            
+            // Reset all links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-brand-blue', 'font-bold');
+                link.classList.add('text-slate-700', 'font-semibold');
+            });
+
+            let activeId = 'nav-home'; // Default
+
+            if (path.includes('catalogue.html')) {
+                if (search.includes('type=sale')) activeId = 'nav-buy';
+                else if (search.includes('type=rent')) activeId = 'nav-rent';
+            } else if (hash === '#custom-request') {
+                activeId = 'nav-sell';
+            } else if (hash === '#plates') {
+                activeId = 'nav-plates';
+            } else if (path.includes('index.html') || path.endsWith('/')) {
+                activeId = 'nav-home';
+            }
+
+            const activeLink = document.getElementById(activeId);
+            if (activeLink) {
+                activeLink.classList.remove('text-slate-700', 'font-semibold');
+                activeLink.classList.add('text-brand-blue', 'font-bold');
+            }
+        }
+
+        // Update on load and hash change
+        window.addEventListener('load', updateActiveNavLink);
+        window.addEventListener('hashchange', updateActiveNavLink);
+    </script>
+</body>
+</html>

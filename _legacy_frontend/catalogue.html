@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue Premium | Central Auto B</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Configuration Tailwind personnalisée -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#1a1a1a',
+                            blue: '#004aad',
+                            red: '#e63946',
+                            orange: '#f4a261',
+                            light: '#f8fafc'
+                        }
+                    },
+                    backgroundImage: {
+                        'brand-gradient': 'linear-gradient(135deg, #f4a261 0%, #e63946 50%, #004aad 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* Cards avec effet moderne */
+        .car-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .car-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 74, 173, 0.15);
+        }
+
+        .car-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: linear-gradient(135deg, #f4a261, #e63946, #004aad);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .car-card:hover::before {
+            opacity: 0.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24 py-2 relative">
+                <!-- Logo avec animation -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="window.location.href='index.html'">
+                    <img src="unnamed.png" alt="Central Auto B Logo" class="h-20 w-auto object-contain logo-shine group-hover:scale-105 transition-transform duration-300">
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
+                    <a href="index.html" id="nav-home" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Accueil</a>
+                    <a href="catalogue.html?type=sale" id="nav-buy" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Acheter</a>
+                    <a href="catalogue.html?type=rent" id="nav-rent" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Louer</a>
+                    <a href="index.html#custom-request" id="nav-sell" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Vendre</a>
+                    <a href="index.html#plates" id="nav-plates" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Plaques</a>
+                </div>
+
+                <!-- Contact Button -->
+                <div class="hidden md:flex items-center">
+                    <a href="#contact" class="bg-brand-gradient text-white px-6 py-2.5 rounded-full font-bold hover:opacity-90 transition-all shadow-lg flex items-center gap-2 transform hover:scale-105 duration-300 btn-glow relative overflow-hidden">
+                        <i class="ph-bold ph-phone relative z-10"></i> <span class="relative z-10">Contact</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-700 hover:text-brand-blue focus:outline-none p-2">
+                        <i class="ph ph-list text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200 absolute w-full shadow-xl">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <a href="index.html" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-brand-blue rounded-xl font-semibold transition-all">Accueil</a>
+                <a href="catalogue.html?type=sale" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-brand-blue rounded-xl font-semibold transition-all">Acheter</a>
+                <a href="catalogue.html?type=rent" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-brand-blue rounded-xl font-semibold transition-all">Louer</a>
+                <a href="index.html#custom-request" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 hover:text-brand-blue rounded-xl font-semibold transition-all">Vendre</a>
+                <a href="index.html#contact" class="block px-4 py-3 bg-brand-gradient text-white text-center rounded-xl font-bold hover:opacity-90 transition-all mt-4">
+                    <i class="ph-bold ph-phone"></i> Contact
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-brand-dark">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-dark via-slate-900 to-brand-blue/20 z-0"></div>
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-blue/10 rounded-full blur-[120px] translate-x-1/3 -translate-y-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-orange/10 rounded-full blur-[100px] -translate-x-1/3 translate-y-1/3"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-brand-orange font-semibold text-sm mb-6 fade-in" style="animation-delay: 0.1s;">
+                <i class="ph-fill ph-car-profile"></i>
+                Notre Collection
+            </span>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 fade-in" style="animation-delay: 0.2s;">
+                Trouvez votre <span class="bg-gradient-to-r from-brand-orange via-brand-red to-brand-blue bg-clip-text text-transparent">Perle Rare</span>
+            </h1>
+            <p class="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto fade-in" style="animation-delay: 0.3s;">
+                Une sélection rigoureuse de véhicules premium, contrôlés et garantis pour votre plus grande satisfaction.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="py-12 md:py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-10">
+                
+                <!-- Sidebar Filters -->
+                <aside class="lg:w-1/4 space-y-8">
+                    <div class="glass-panel rounded-3xl p-6 sticky top-28">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-brand-dark flex items-center gap-2">
+                                <i class="ph-fill ph-faders text-brand-blue"></i> Filtres
+                            </h3>
+                            <button onclick="resetFilters()" class="text-sm text-slate-500 hover:text-brand-red font-medium transition-colors flex items-center gap-1">
+                                <i class="ph-bold ph-arrow-counter-clockwise"></i> Reset
+                            </button>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="mb-6">
+                            <div class="relative">
+                                <i class="ph-bold ph-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                                <input type="text" id="searchInput" placeholder="Rechercher..." class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm">
+                            </div>
+                        </div>
+
+                        <!-- Type Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 mb-3">Type de projet</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="filterType" value="all" class="peer sr-only" checked>
+                                    <div class="text-center py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium peer-checked:bg-brand-dark peer-checked:text-white peer-checked:border-brand-dark transition-all hover:bg-slate-50">
+                                        Tout
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="filterType" value="sale" class="peer sr-only">
+                                    <div class="text-center py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium peer-checked:bg-brand-orange peer-checked:text-white peer-checked:border-brand-orange transition-all hover:bg-slate-50">
+                                        Achat
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer col-span-2">
+                                    <input type="radio" name="filterType" value="rent" class="peer sr-only">
+                                    <div class="text-center py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue transition-all hover:bg-slate-50">
+                                        Location
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Make Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 mb-3">Marque</label>
+                            <select id="filterMake" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm appearance-none cursor-pointer">
+                                <option value="all">Toutes les marques</option>
+                            </select>
+                        </div>
+
+                        <!-- Fuel Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 mb-3">Carburant</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="filterFuel" value="Essence" class="w-5 h-5 rounded-md border-slate-300 text-brand-blue focus:ring-brand-blue">
+                                    <span class="text-slate-600 group-hover:text-brand-dark transition-colors">Essence</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="filterFuel" value="Diesel" class="w-5 h-5 rounded-md border-slate-300 text-brand-blue focus:ring-brand-blue">
+                                    <span class="text-slate-600 group-hover:text-brand-dark transition-colors">Diesel</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="filterFuel" value="Hybride" class="w-5 h-5 rounded-md border-slate-300 text-brand-blue focus:ring-brand-blue">
+                                    <span class="text-slate-600 group-hover:text-brand-dark transition-colors">Hybride</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="filterFuel" value="Électrique" class="w-5 h-5 rounded-md border-slate-300 text-brand-blue focus:ring-brand-blue">
+                                    <span class="text-slate-600 group-hover:text-brand-dark transition-colors">Électrique</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Transmission Filter -->
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-3">Boîte de vitesse</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="filterTransmission" value="Auto" class="peer sr-only">
+                                    <div class="text-center py-2 rounded-lg border border-slate-200 text-slate-500 text-xs font-bold uppercase peer-checked:bg-slate-800 peer-checked:text-white peer-checked:border-slate-800 transition-all hover:bg-slate-50">
+                                        Auto
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="checkbox" name="filterTransmission" value="Manuelle" class="peer sr-only">
+                                    <div class="text-center py-2 rounded-lg border border-slate-200 text-slate-500 text-xs font-bold uppercase peer-checked:bg-slate-800 peer-checked:text-white peer-checked:border-slate-800 transition-all hover:bg-slate-50">
+                                        Manuelle
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Results Grid -->
+                <div class="lg:w-3/4">
+                    <!-- Results Header -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                        <p class="text-slate-500 font-medium">
+                            <span id="resultCount" class="text-brand-dark font-bold text-xl">0</span> véhicules disponibles
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-slate-500">Trier par:</span>
+                            <select id="sortOrder" class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand-blue">
+                                <option value="newest">Nouveautés</option>
+                                <option value="priceAsc">Prix croissant</option>
+                                <option value="priceDesc">Prix décroissant</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Grid -->
+                    <div id="catalogueGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        <!-- Cars injected via JS -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyMessage" class="hidden text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                        <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="ph-duotone ph-car-profile text-5xl text-slate-300"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-brand-dark mb-2">Aucun véhicule trouvé</h3>
+                        <p class="text-slate-500 mb-8 max-w-md mx-auto">Nous n'avons pas trouvé de véhicule correspondant à vos critères actuels.</p>
+                        <button onclick="resetFilters()" class="bg-brand-dark text-white px-8 py-3 rounded-xl font-bold hover:bg-brand-blue transition-all shadow-lg hover:shadow-brand-blue/30">
+                            Réinitialiser les filtres
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Premium -->
+    <footer class="relative bg-gradient-to-br from-brand-dark via-slate-900 to-brand-dark overflow-hidden" id="contact">
+        <!-- Decorative top border -->
+        <div class="absolute top-0 left-0 right-0 h-1 bg-brand-gradient"></div>
+        
+        <!-- Decorative blobs -->
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-blue/10 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-orange/10 rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2"></div>
+        
+        <!-- Pre-Footer CTA -->
+        <div class="relative z-10 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-8 bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-white/10">
+                    <div class="text-center lg:text-left">
+                        <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">Prêt à trouver votre véhicule idéal ?</h3>
+                        <p class="text-slate-400">Contactez-nous dès maintenant pour une expérience personnalisée</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="tel:0123456789" class="group flex items-center gap-3 bg-brand-gradient text-white font-bold px-8 py-4 rounded-2xl hover:opacity-90 transition-all shadow-lg">
+                            <i class="ph-fill ph-phone text-xl"></i>
+                            <span>01 23 45 67 89</span>
+                        </a>
+                        <button onclick="window.location.href='index.html#custom-request'" class="flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-2xl transition-all border border-white/20">
+                            <i class="ph-fill ph-envelope text-xl"></i>
+                            <span>Nous contacter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Footer -->
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-16">
+                <!-- Brand Column -->
+                <div class="lg:col-span-1">
+                    <img src="unnamed.png" alt="Central Auto B Logo" class="h-28 w-auto mb-6 object-contain brightness-0 invert">
+                    <p class="text-slate-400 text-sm leading-relaxed mb-8">
+                        Votre partenaire de confiance pour l'achat, la vente et la location de véhicules. Expertise, transparence et satisfaction client depuis plus de 10 ans.
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-brand-blue hover:text-white transition-all duration-300 border border-white/10 hover:border-brand-blue hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-facebook-logo text-xl"></i>
+                        </a>
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-gradient-to-br hover:from-pink-500 hover:to-orange-500 hover:text-white transition-all duration-300 border border-white/10 hover:border-pink-500 hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-instagram-logo text-xl"></i>
+                        </a>
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-brand-blue hover:text-white transition-all duration-300 border border-white/10 hover:border-brand-blue hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-linkedin-logo text-xl"></i>
+                        </a>
+                        <a href="#" class="group w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-sm flex items-center justify-center text-slate-400 hover:bg-red-500 hover:text-white transition-all duration-300 border border-white/10 hover:border-red-500 hover:scale-110 hover:-translate-y-1">
+                            <i class="ph-fill ph-youtube-logo text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Services Column -->
+                <div>
+                    <h4 class="font-bold text-white mb-6 text-lg flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-orange/20 flex items-center justify-center">
+                            <i class="ph-bold ph-wrench text-brand-orange text-sm"></i>
+                        </div>
+                        Services
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Achat Neuf & Occasion
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Location de véhicules
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Reprise Cash Immédiate
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Recherche Personnalisée
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Financement sur-mesure
+                        </a></li>
+                        <li><a href="#" class="group flex items-center gap-3 text-slate-400 hover:text-white transition-all py-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange/50 group-hover:bg-brand-orange transition-colors"></span>
+                            Plaques d'immatriculation
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- Horaires Column -->
+                <div>
+                    <h4 class="font-bold text-white mb-6 text-lg flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-blue/20 flex items-center justify-center">
+                            <i class="ph-bold ph-clock text-brand-blue text-sm"></i>
+                        </div>
+                        Horaires
+                    </h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-400">Lundi - Vendredi</span> 
+                            <span class="font-bold text-brand-orange">09h - 19h</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-400">Samedi</span> 
+                            <span class="font-bold text-brand-orange">09h - 18h</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-400">Dimanche</span> 
+                            <span class="text-brand-red font-bold">Fermé</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                        <div class="flex items-center gap-2 text-green-400 font-semibold text-sm">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            Ouvert maintenant
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Column -->
+                <div>
+                    <h4 class="font-bold text-white mb-6 text-lg flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-red/20 flex items-center justify-center">
+                            <i class="ph-bold ph-chat-circle text-brand-red text-sm"></i>
+                        </div>
+                        Contact
+                    </h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#" class="group flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-brand-blue/50 transition-all">
+                                <div class="w-12 h-12 rounded-xl bg-brand-blue/20 text-brand-blue flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-map-pin text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-white font-semibold text-sm">Adresse</span>
+                                    <p class="text-slate-400 text-sm mt-1">123 Avenue de l'Automobile,<br>75000 Paris</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:0123456789" class="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-brand-orange/50 transition-all">
+                                <div class="w-12 h-12 rounded-xl bg-brand-orange/20 text-brand-orange flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-phone text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-white font-semibold text-sm">Téléphone</span>
+                                    <p class="text-brand-orange font-bold text-lg mt-1">01 23 45 67 89</p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:contact@centralautob.fr" class="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-brand-red/50 transition-all">
+                                <div class="w-12 h-12 rounded-xl bg-brand-red/20 text-brand-red flex-shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i class="ph-fill ph-envelope text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-white font-semibold text-sm">Email</span>
+                                    <p class="text-slate-400 text-sm mt-1">contact@centralautob.fr</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Trust Badges -->
+            <div class="border-t border-white/10 pt-10 mb-10">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-green-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-shield-check text-green-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Paiement</p>
+                            <p class="text-xs text-slate-400">100% sécurisé</p>
+                        </div>
+                    </div>
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-blue-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-medal text-blue-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Garantie</p>
+                            <p class="text-xs text-slate-400">Satisfait ou remboursé</p>
+                        </div>
+                    </div>
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-orange-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-headset text-orange-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Support</p>
+                            <p class="text-xs text-slate-400">7j/7 à votre écoute</p>
+                        </div>
+                    </div>
+                    <div class="group flex items-center gap-4 p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-purple-500/30 transition-all">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="ph-fill ph-truck text-purple-400 text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">Livraison</p>
+                            <p class="text-xs text-slate-400">Partout en France</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/10">
+                <p class="text-sm text-slate-500">© 2024 Central Auto B. Tous droits réservés.</p>
+                <div class="flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-brand-orange transition-colors">Mentions légales</a>
+                    <a href="#" class="hover:text-brand-orange transition-colors">Politique de confidentialité</a>
+                    <a href="#" class="hover:text-brand-orange transition-colors">CGV</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Détails Véhicule -->
+    <div id="carModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full max-h-[95vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+                <!-- Image Section -->
+                <div class="relative h-72 sm:h-80 lg:h-full lg:min-h-[500px] bg-slate-100">
+                    <img id="modalImage" src="" alt="" class="w-full h-full object-cover absolute inset-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent lg:hidden"></div>
+                    <button onclick="closeCarModal()" class="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-white hover:text-brand-dark transition-all lg:hidden">
+                        <i class="ph-bold ph-x text-xl"></i>
+                    </button>
+                    <div id="modalBadge" class="absolute top-4 left-4 px-4 py-2 rounded-full text-white text-sm font-bold uppercase tracking-wide shadow-lg backdrop-blur-sm"></div>
+                </div>
+
+                <!-- Content Section -->
+                <div class="p-8 lg:p-10 flex flex-col h-full">
+                    <div class="flex justify-between items-start mb-2 hidden lg:flex">
+                        <span class="text-sm font-bold text-slate-400 uppercase tracking-wider">Détails du véhicule</span>
+                        <button onclick="closeCarModal()" class="text-slate-400 hover:text-brand-red transition-colors">
+                            <i class="ph-bold ph-x text-2xl"></i>
+                        </button>
+                    </div>
+
+                    <h2 id="modalMake" class="text-3xl lg:text-4xl font-extrabold text-brand-dark mb-1"></h2>
+                    <p id="modalModel" class="text-xl text-slate-500 font-medium mb-6"></p>
+
+                    <div class="flex items-end gap-4 mb-8 pb-8 border-b border-slate-100">
+                        <p id="modalPrice" class="text-4xl lg:text-5xl font-extrabold tracking-tight"></p>
+                        <span class="text-slate-400 mb-2 font-medium">TTC</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="ph-fill ph-calendar-blank text-brand-blue text-xl"></i>
+                                <span class="text-xs font-bold text-slate-400 uppercase">Année</span>
+                            </div>
+                            <p id="modalYear" class="text-lg font-bold text-brand-dark"></p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="ph-fill ph-gas-pump text-brand-orange text-xl"></i>
+                                <span class="text-xs font-bold text-slate-400 uppercase">Carburant</span>
+                            </div>
+                            <p id="modalFuel" class="text-lg font-bold text-brand-dark"></p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="ph-fill ph-gear text-brand-dark text-xl"></i>
+                                <span class="text-xs font-bold text-slate-400 uppercase">Boîte</span>
+                            </div>
+                            <p id="modalTransmission" class="text-lg font-bold text-brand-dark"></p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i id="modalExtraIcon" class="ph-fill text-brand-red text-xl"></i>
+                                <span id="modalExtraLabel" class="text-xs font-bold text-slate-400 uppercase"></span>
+                            </div>
+                            <p id="modalExtraValue" class="text-lg font-bold text-brand-dark"></p>
+                        </div>
+                    </div>
+
+                    <!-- Rental Simulator (Hidden by default) -->
+                    <div id="rentalSimulator" class="hidden mt-6 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        <h4 class="text-lg font-bold text-brand-dark mb-4 flex items-center gap-2">
+                            <i class="ph-fill ph-calculator text-brand-blue"></i>
+                            Simulateur de Location
+                        </h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-600 mb-2">Durée (jours)</label>
+                                <div class="flex items-center gap-4">
+                                    <button onclick="adjustDuration(-1)" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
+                                        <i class="ph-bold ph-minus"></i>
+                                    </button>
+                                    <input type="number" id="simDuration" value="1" min="1" class="w-20 text-center font-bold text-lg bg-transparent border-none focus:ring-0 p-0" onchange="updateRentalTotal()">
+                                    <button onclick="adjustDuration(1)" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
+                                        <i class="ph-bold ph-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-slate-200 flex justify-between items-end">
+                                <span class="text-sm font-medium text-slate-500">Total estimé</span>
+                                <span id="simTotal" class="text-3xl font-extrabold text-brand-blue">0 €</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-6">
+                        <button onclick="contactAboutCar()" class="w-full bg-brand-gradient text-white font-bold py-5 rounded-2xl hover:opacity-90 transition-all shadow-xl shadow-brand-blue/20 flex items-center justify-center gap-3 hover:-translate-y-1 transform duration-300 group">
+                            <span class="text-lg">Je suis intéressé</span>
+                            <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                        <p class="text-center text-xs text-slate-400 mt-4">
+                            <i class="ph-fill ph-shield-check text-green-500 mr-1"></i> Véhicule contrôlé et garanti
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton retour en haut -->
+    <button id="scrollToTop" class="fixed bottom-8 right-8 bg-brand-dark text-white w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-brand-blue hover:-translate-y-1 z-40" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="ph-bold ph-arrow-up text-2xl"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // Toggle mobile menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const icon = this.querySelector('i');
+            
+            mobileMenu.classList.toggle('hidden');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('ph-x');
+                icon.classList.add('ph-list');
+            } else {
+                icon.classList.remove('ph-list');
+                icon.classList.add('ph-x');
+            }
+        });
+
+        // Catalogue complet
+        const fullCatalogue = [
+            {
+                id: 1,
+                make: "Renault",
+                model: "Clio V Esprit Alpine",
+                year: 2023,
+                price: "21 900 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Hybride",
+                transmission: "Auto",
+                mileage: "5 000 km",
+                image: "https://images.unsplash.com/photo-1617531653332-bd46c24f2068?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 2,
+                make: "Peugeot",
+                model: "2008 GT",
+                year: 2022,
+                price: null,
+                rentPrice: "65 € /jour",
+                type: 'rent',
+                fuel: "Essence",
+                transmission: "Manuelle",
+                seats: "5 places",
+                image: "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 3,
+                make: "Audi",
+                model: "Q3 Sportback",
+                year: 2021,
+                price: "38 500 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Diesel",
+                transmission: "Auto",
+                mileage: "42 000 km",
+                image: "https://images.unsplash.com/photo-1609521263047-f8f205293f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 4,
+                make: "Volkswagen",
+                model: "Golf 8",
+                year: 2023,
+                price: null,
+                rentPrice: "85 € /jour",
+                type: 'rent',
+                fuel: "Hybride",
+                transmission: "Auto",
+                seats: "5 places",
+                image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 5,
+                make: "Toyota",
+                model: "C-HR GR Sport",
+                year: 2022,
+                price: "29 900 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Hybride",
+                transmission: "Auto",
+                mileage: "12 000 km",
+                image: "https://images.unsplash.com/photo-1621361365424-06f0e1eb5c49?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 6,
+                make: "Fiat",
+                model: "500 Electrique",
+                year: 2023,
+                price: null,
+                rentPrice: "45 € /jour",
+                type: 'rent',
+                fuel: "Électrique",
+                transmission: "Auto",
+                seats: "4 places",
+                image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 7,
+                make: "BMW",
+                model: "Série 3",
+                year: 2023,
+                price: "45 900 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Diesel",
+                transmission: "Auto",
+                mileage: "15 000 km",
+                image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 8,
+                make: "Mercedes",
+                model: "Classe A",
+                year: 2022,
+                price: null,
+                rentPrice: "95 € /jour",
+                type: 'rent',
+                fuel: "Essence",
+                transmission: "Auto",
+                seats: "5 places",
+                image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 9,
+                make: "Citroën",
+                model: "C3 Aircross",
+                year: 2023,
+                price: "24 500 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Essence",
+                transmission: "Manuelle",
+                mileage: "8 000 km",
+                image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 10,
+                make: "Ford",
+                model: "Puma ST",
+                year: 2023,
+                price: null,
+                rentPrice: "70 € /jour",
+                type: 'rent',
+                fuel: "Hybride",
+                transmission: "Auto",
+                seats: "5 places",
+                image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: 11,
+                make: "Hyundai",
+                model: "Tucson",
+                year: 2022,
+                price: "32 900 €",
+                rentPrice: null,
+                type: 'sale',
+                fuel: "Hybride",
+                transmission: "Auto",
+                mileage: "20 000 km",
+                image: "https://images.unsplash.com/photo-1615715073328-39c148b37b23?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            },
+            {
+                id: 12,
+                make: "Tesla",
+                model: "Model 3",
+                year: 2023,
+                price: null,
+                rentPrice: "120 € /jour",
+                type: 'rent',
+                fuel: "Électrique",
+                transmission: "Auto",
+                seats: "5 places",
+                image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+            }
+        ];
+
+        let filteredCars = [...fullCatalogue];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            populateMakeFilter();
+            
+            // Check URL params for initial filter
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeParam = urlParams.get('type');
+            if (typeParam) {
+                const radio = document.querySelector(`input[name="filterType"][value="${typeParam}"]`);
+                if (radio) {
+                    radio.checked = true;
+                }
+            }
+            
+            applyFilters();
+            setupFilterListeners();
+        });
+
+        // Remplir le filtre des marques
+        function populateMakeFilter() {
+            const makes = [...new Set(fullCatalogue.map(car => car.make))].sort();
+            const select = document.getElementById('filterMake');
+            makes.forEach(make => {
+                const option = document.createElement('option');
+                option.value = make;
+                option.textContent = make;
+                select.appendChild(option);
+            });
+        }
+
+        // Configuration des écouteurs de filtres
+        function setupFilterListeners() {
+            // Radio buttons for Type
+            document.querySelectorAll('input[name="filterType"]').forEach(radio => {
+                radio.addEventListener('change', applyFilters);
+            });
+
+            // Select for Make
+            document.getElementById('filterMake').addEventListener('change', applyFilters);
+
+            // Checkboxes for Fuel
+            document.querySelectorAll('input[name="filterFuel"]').forEach(cb => {
+                cb.addEventListener('change', applyFilters);
+            });
+
+            // Checkboxes for Transmission
+            document.querySelectorAll('input[name="filterTransmission"]').forEach(cb => {
+                cb.addEventListener('change', applyFilters);
+            });
+
+            // Search Input
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+            // Sort Select
+            document.getElementById('sortOrder').addEventListener('change', applyFilters);
+        }
+
+        // Appliquer les filtres
+        function applyFilters() {
+            // Get values
+            const type = document.querySelector('input[name="filterType"]:checked').value;
+            const make = document.getElementById('filterMake').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const sort = document.getElementById('sortOrder').value;
+            
+            // Get checked fuels
+            const fuels = Array.from(document.querySelectorAll('input[name="filterFuel"]:checked')).map(cb => cb.value);
+            
+            // Get checked transmissions
+            const transmissions = Array.from(document.querySelectorAll('input[name="filterTransmission"]:checked')).map(cb => cb.value);
+
+            // Filter
+            filteredCars = fullCatalogue.filter(car => {
+                const matchType = type === 'all' || car.type === type;
+                const matchMake = make === 'all' || car.make === make;
+                const matchFuel = fuels.length === 0 || fuels.includes(car.fuel);
+                const matchTransmission = transmissions.length === 0 || transmissions.includes(car.transmission);
+                const matchSearch = car.make.toLowerCase().includes(search) || car.model.toLowerCase().includes(search);
+
+                return matchType && matchMake && matchFuel && matchTransmission && matchSearch;
+            });
+
+            // Sort
+            if (sort === 'priceAsc') {
+                filteredCars.sort((a, b) => {
+                    const priceA = getPriceValue(a);
+                    const priceB = getPriceValue(b);
+                    return priceA - priceB;
+                });
+            } else if (sort === 'priceDesc') {
+                filteredCars.sort((a, b) => {
+                    const priceA = getPriceValue(a);
+                    const priceB = getPriceValue(b);
+                    return priceB - priceA;
+                });
+            } else {
+                // Newest (default by ID desc)
+                filteredCars.sort((a, b) => b.id - a.id);
+            }
+
+            renderCatalogue();
+        }
+
+        function getPriceValue(car) {
+            if (car.type === 'sale') {
+                return parseInt(car.price.replace(/[^0-9]/g, ''));
+            } else {
+                return parseInt(car.rentPrice.replace(/[^0-9]/g, ''));
+            }
+        }
+
+        // Réinitialiser les filtres
+        function resetFilters() {
+            document.querySelector('input[name="filterType"][value="all"]').checked = true;
+            document.getElementById('filterMake').value = 'all';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('sortOrder').value = 'newest';
+            
+            document.querySelectorAll('input[name="filterFuel"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="filterTransmission"]').forEach(cb => cb.checked = false);
+            
+            applyFilters();
+        }
+
+        // Rendu du catalogue
+        function renderCatalogue() {
+            const grid = document.getElementById('catalogueGrid');
+            const emptyMessage = document.getElementById('emptyMessage');
+            const countElement = document.getElementById('resultCount');
+
+            countElement.textContent = filteredCars.length;
+
+            if (filteredCars.length === 0) {
+                grid.classList.add('hidden');
+                emptyMessage.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyMessage.classList.add('hidden');
+            grid.innerHTML = '';
+
+            filteredCars.forEach((car, index) => {
+                const badgeClass = car.type === 'sale' ? 'bg-brand-orange' : 'bg-brand-blue';
+                const badgeText = car.type === 'sale' ? 'À Vendre' : 'Location';
+                const priceColor = car.type === 'sale' ? 'text-brand-blue' : 'text-brand-red';
+                const priceDisplay = car.type === 'sale' ? car.price : car.rentPrice;
+                const subDetail = car.type === 'sale' ? car.mileage : car.seats;
+                const subDetailIcon = car.type === 'sale' ? 'ph-gauge' : 'ph-users';
+
+                const cardHTML = `
+                    <div class="bg-white rounded-3xl shadow-lg border-2 border-slate-100 overflow-hidden car-card h-full flex flex-col relative group" style="animation: fadeIn 0.5s ease-out ${index * 0.05}s backwards">
+                        <div class="relative h-64 overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <img src="${car.image}" alt="${car.make} ${car.model}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                            <span class="absolute top-5 left-5 ${badgeClass} text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm">
+                                ${badgeText}
+                            </span>
+                            <div class="absolute bottom-5 right-5 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i class="ph-bold ph-heart text-brand-red text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-extrabold text-brand-dark group-hover:text-brand-blue transition-colors">${car.make}</h3>
+                                    <p class="text-slate-500 font-medium text-sm">${car.model}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-extrabold ${priceColor}">${priceDisplay}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-2 mt-auto pt-5 border-t-2 border-slate-100 text-sm text-slate-600">
+                                <div class="flex flex-col items-center gap-1 p-2 rounded-lg bg-slate-50 group-hover:bg-white transition-colors">
+                                    <i class="ph-fill ph-gas-pump text-brand-orange text-lg"></i>
+                                    <span class="font-bold text-xs">${car.fuel}</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-1 p-2 rounded-lg bg-slate-50 group-hover:bg-white transition-colors">
+                                    <i class="ph-fill ph-gear text-brand-blue text-lg"></i>
+                                    <span class="font-bold text-xs">${car.transmission}</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-1 p-2 rounded-lg bg-slate-50 group-hover:bg-white transition-colors">
+                                    <i class="ph-fill ${subDetailIcon} text-brand-red text-lg"></i>
+                                    <span class="font-bold text-xs">${subDetail}</span>
+                                </div>
+                            </div>
+
+                            <button onclick="openCarModal(${car.id})" class="w-full mt-6 bg-brand-dark text-white font-bold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:bg-brand-blue hover:shadow-brand-blue/30 group/btn">
+                                <span>Voir détails</span>
+                                <i class="ph-bold ph-arrow-right group-hover/btn:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        // Ouvrir le modal avec les détails de la voiture
+        let currentDailyRate = 0;
+
+        function openCarModal(carId) {
+            const car = fullCatalogue.find(c => c.id === carId);
+            if (!car) return;
+
+            // Remplir les données du modal
+            document.getElementById('modalImage').src = car.image;
+            document.getElementById('modalImage').alt = `${car.make} ${car.model}`;
+            document.getElementById('modalMake').textContent = car.make;
+            document.getElementById('modalModel').textContent = car.model;
+            document.getElementById('modalYear').textContent = car.year;
+            document.getElementById('modalFuel').textContent = car.fuel;
+            document.getElementById('modalTransmission').textContent = car.transmission;
+
+            // Badge et prix selon le type
+            const badge = document.getElementById('modalBadge');
+            const price = document.getElementById('modalPrice');
+            const simulator = document.getElementById('rentalSimulator');
+            
+            if (car.type === 'sale') {
+                badge.className = 'absolute top-4 left-4 px-4 py-2 rounded-full text-white text-sm font-bold uppercase tracking-wide shadow-lg backdrop-blur-sm bg-brand-orange';
+                badge.textContent = 'À Vendre';
+                price.className = 'text-4xl lg:text-5xl font-extrabold text-brand-blue tracking-tight';
+                price.textContent = car.price;
+                
+                document.getElementById('modalExtraLabel').textContent = 'Kilométrage';
+                document.getElementById('modalExtraValue').textContent = car.mileage;
+                document.getElementById('modalExtraIcon').className = 'ph-fill ph-gauge text-brand-red text-xl';
+                
+                simulator.classList.add('hidden');
+            } else {
+                badge.className = 'absolute top-4 left-4 px-4 py-2 rounded-full text-white text-sm font-bold uppercase tracking-wide shadow-lg backdrop-blur-sm bg-brand-blue';
+                badge.textContent = 'Location';
+                price.className = 'text-4xl lg:text-5xl font-extrabold text-brand-red tracking-tight';
+                price.textContent = car.rentPrice;
+                
+                document.getElementById('modalExtraLabel').textContent = 'Places';
+                document.getElementById('modalExtraValue').textContent = car.seats;
+                document.getElementById('modalExtraIcon').className = 'ph-fill ph-users text-brand-red text-xl';
+                
+                // Setup Simulator
+                simulator.classList.remove('hidden');
+                currentDailyRate = parseInt(car.rentPrice.replace(/[^0-9]/g, ''));
+                document.getElementById('simDuration').value = 1;
+                updateRentalTotal();
+            }
+
+            // Afficher le modal avec animation
+            const modal = document.getElementById('carModal');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            // Bloquer le scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function adjustDuration(change) {
+            const input = document.getElementById('simDuration');
+            let val = parseInt(input.value) + change;
+            if (val < 1) val = 1;
+            input.value = val;
+            updateRentalTotal();
+        }
+
+        function updateRentalTotal() {
+            const duration = parseInt(document.getElementById('simDuration').value) || 1;
+            const total = duration * currentDailyRate;
+            document.getElementById('simTotal').textContent = total + ' €';
+        }
+
+        // Fermer le modal
+        function closeCarModal() {
+            const modal = document.getElementById('carModal');
+            const content = document.getElementById('modalContent');
+            
+            // Animation de sortie
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+
+            // Débloquer le scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Contacter pour un véhicule spécifique
+        function contactAboutCar() {
+            window.location.href = `index.html#custom-request`;
+        }
+
+        // Fermer le modal en cliquant sur le fond
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('carModal');
+            if (e.target === modal) {
+                closeCarModal();
+            }
+        });
+
+        // Gestion du bouton scroll to top
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+                scrollToTopBtn.classList.add('opacity-100', 'pointer-events-auto');
+            } else {
+                scrollToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+                scrollToTopBtn.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+        });
+
+        // Navigation Active State Management
+        function updateActiveNavLink() {
+            const path = window.location.pathname;
+            const hash = window.location.hash;
+            const search = window.location.search;
+            
+            // Reset all links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-brand-blue', 'font-bold');
+                link.classList.add('text-slate-700', 'font-semibold');
+            });
+
+            let activeId = 'nav-home'; // Default
+
+            if (path.includes('catalogue.html')) {
+                if (search.includes('type=sale')) activeId = 'nav-buy';
+                else if (search.includes('type=rent')) activeId = 'nav-rent';
+            } else if (hash === '#custom-request') {
+                activeId = 'nav-sell';
+            } else if (hash === '#plates') {
+                activeId = 'nav-plates';
+            } else if (path.includes('index.html') || path.endsWith('/')) {
+                activeId = 'nav-home';
+            }
+
+            const activeLink = document.getElementById(activeId);
+            if (activeLink) {
+                activeLink.classList.remove('text-slate-700', 'font-semibold');
+                activeLink.classList.add('text-brand-blue', 'font-bold');
+            }
+        }
+
+        // Update on load and hash change
+        window.addEventListener('load', updateActiveNavLink);
+        window.addEventListener('hashchange', updateActiveNavLink);
+    </script>
+</body>
+</html>
