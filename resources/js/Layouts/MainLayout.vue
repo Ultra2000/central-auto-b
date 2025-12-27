@@ -5,9 +5,13 @@ import Toast from '@/Components/Toast.vue';
 import ScrollToTop from '@/Components/ScrollToTop.vue';
 import ExitModal from '@/Components/ExitModal.vue';
 import CallbackModal from '@/Components/CallbackModal.vue';
+import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
+import { useTranslations } from '@/Composables/useTranslations';
 
+const { __ } = useTranslations();
 const mobileMenuOpen = ref(false);
 const callbackModalRef = ref(null);
+const currentYear = new Date().getFullYear();
 
 const toggleMobileMenu = () => {
     mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -38,17 +42,16 @@ const openCallbackModal = () => {
 
                     <!-- Desktop Menu -->
                     <div class="hidden md:flex space-x-8 items-center absolute left-1/2 transform -translate-x-1/2">
-                        <Link href="/" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Accueil</Link>
-                        <Link href="/catalogue?type=sale" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Acheter</Link>
-                        <Link href="/catalogue?type=rent" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Louer</Link>
-                        <a href="/#custom-request" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Vendre</a>
-                        <Link href="/plaques" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">Plaques d'immatriculation</Link>
+                        <Link href="/" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">{{ __('home') }}</Link>
+                        <Link href="/catalogue?type=sale" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">{{ __('vehicles') }}</Link>
+                        <Link href="/plaques" class="nav-link text-slate-700 hover:text-brand-blue font-semibold transition-all duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-blue after:transition-all hover:after:w-full">{{ __('plates') }}</Link>
                     </div>
 
-                    <!-- Contact Button -->
-                    <div class="hidden md:flex items-center">
+                    <!-- Contact Button & Language Switcher -->
+                    <div class="hidden md:flex items-center gap-4">
+                        <LanguageSwitcher />
                         <a href="#contact" class="bg-brand-gradient text-white px-6 py-2.5 rounded-full font-bold hover:opacity-90 transition-all shadow-lg flex items-center gap-2 transform hover:scale-105 duration-300 btn-glow relative overflow-hidden">
-                            <i class="ph-bold ph-phone relative z-10"></i> <span class="relative z-10">Contact</span>
+                            <i class="ph-bold ph-phone relative z-10"></i> <span class="relative z-10">{{ __('contact') }}</span>
                         </a>
                     </div>
 
@@ -96,9 +99,9 @@ const openCallbackModal = () => {
                             <p class="text-slate-400">Contactez-nous dès maintenant pour une expérience personnalisée</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="tel:0123456789" class="group flex items-center gap-3 bg-brand-gradient text-white font-bold px-8 py-4 rounded-2xl hover:opacity-90 transition-all shadow-lg">
+                            <a :href="'tel:' + $page.props.settings.contact_phone" class="group flex items-center gap-3 bg-brand-gradient text-white font-bold px-8 py-4 rounded-2xl hover:opacity-90 transition-all shadow-lg">
                                 <i class="ph-fill ph-phone text-xl"></i>
-                                <span>01 23 45 67 89</span>
+                                <span>{{ $page.props.settings.contact_phone }}</span>
                             </a>
                             <a href="#custom-request" class="flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-2xl transition-all border border-white/20">
                                 <i class="ph-fill ph-envelope text-xl"></i>
@@ -181,11 +184,11 @@ const openCallbackModal = () => {
                         <div class="space-y-3">
                             <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
                                 <span class="text-slate-400">Lundi - Vendredi</span> 
-                                <span class="font-bold text-brand-orange">09h - 19h</span>
+                                <span class="font-bold text-brand-orange">{{ $page.props.settings.opening_hours_week }}</span>
                             </div>
                             <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
                                 <span class="text-slate-400">Samedi</span> 
-                                <span class="font-bold text-brand-orange">09h - 18h</span>
+                                <span class="font-bold text-brand-orange">{{ $page.props.settings.opening_hours_weekend }}</span>
                             </div>
                             <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
                                 <span class="text-slate-400">Dimanche</span> 
@@ -214,23 +217,23 @@ const openCallbackModal = () => {
                                     <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red group-hover:text-white transition-all">
                                         <i class="ph-fill ph-map-pin text-xl"></i>
                                     </div>
-                                    <span class="mt-2">123 Avenue de l'Automobile<br>75000 Paris</span>
+                                    <span class="mt-2">{{ $page.props.settings.contact_address }}</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="tel:0123456789" class="flex items-center gap-3 text-slate-400 hover:text-white transition-all group">
+                                <a :href="'tel:' + $page.props.settings.contact_phone" class="flex items-center gap-3 text-slate-400 hover:text-white transition-all group">
                                     <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red group-hover:text-white transition-all">
                                         <i class="ph-fill ph-phone text-xl"></i>
                                     </div>
-                                    <span>01 23 45 67 89</span>
+                                    <span>{{ $page.props.settings.contact_phone }}</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="mailto:contact@centralautob.fr" class="flex items-center gap-3 text-slate-400 hover:text-white transition-all group">
+                                <a :href="'mailto:' + $page.props.settings.contact_email" class="flex items-center gap-3 text-slate-400 hover:text-white transition-all group">
                                     <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-brand-red group-hover:text-white transition-all">
                                         <i class="ph-fill ph-envelope text-xl"></i>
                                     </div>
-                                    <span>contact@centralautob.fr</span>
+                                    <span>{{ $page.props.settings.contact_email }}</span>
                                 </a>
                             </li>
                         </ul>
@@ -240,12 +243,11 @@ const openCallbackModal = () => {
                 <!-- Copyright -->
                 <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p class="text-slate-500 text-sm">
-                        &copy; 2024 Central Auto B. Tous droits réservés.
+                        &copy; {{ currentYear }} Central Auto B. {{ __('all_rights_reserved') }}.
                     </p>
                     <div class="flex gap-6 text-sm text-slate-500">
-                        <a href="#" class="hover:text-white transition-colors">Mentions Légales</a>
-                        <a href="#" class="hover:text-white transition-colors">Politique de Confidentialité</a>
-                        <a href="#" class="hover:text-white transition-colors">CGV</a>
+                        <a href="#" class="hover:text-white transition-colors">{{ __('terms') }}</a>
+                        <a href="#" class="hover:text-white transition-colors">{{ __('privacy') }}</a>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,17 @@
 <script setup>
 import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 
 const isOpen = ref(false);
+const showSuccess = ref(false);
+
+const form = useForm({
+    name: '',
+    phone: '',
+    email: '',
+    message: '',
+    type: 'callback'
+});
 
 const open = () => {
     isOpen.value = true;
@@ -9,13 +19,21 @@ const open = () => {
 
 const close = () => {
     isOpen.value = false;
+    showSuccess.value = false;
 };
 
 const submitCallback = () => {
-    close();
-    window.dispatchEvent(new CustomEvent('show-toast', { 
-        detail: { message: 'Demande enregistrée ! Nous vous appelons dans quelques minutes 📞' } 
-    }));
+    form.post(route('leads.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showSuccess.value = true;
+            setTimeout(() => {
+                form.reset();
+                showSuccess.value = false;
+                close();
+            }, 2500);
+        }
+    });
 };
 
 // Expose open method
@@ -35,31 +53,88 @@ defineExpose({ open });
                 </div>
                 
                 <h3 class="text-2xl font-bold text-slate-900 mb-2">Rappel Gratuit</h3>
-                <p class="text-slate-500 mb-8">Laissez-nous votre numéro, un conseiller vous rappelle immédiatement.</p>
+                <p class="text-slate-500 mb-8">Laissez-nous vos coordonnées, un conseiller vous rappelle rapidement.</p>
                 
+                <!-- Success Message -->
+                <div v-if="showSuccess" class="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3 text-green-700 animate-fade-in">
+                    <i class="ph-fill ph-check-circle text-2xl"></i>
+                    <p class="font-medium">Demande enregistrée ! Nous vous appelons très bientôt.</p>
+                </div>
+
                 <form @submit.prevent="submitCallback" class="space-y-4">
                     <div class="text-left">
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Votre numéro</label>
-                        <input type="tel" placeholder="06 12 34 56 78" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Nom complet *</label>
+                        <input 
+                            type="text" 
+                            v-model="form.name"
+                            placeholder="Jean Dupont" 
+                            required 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all"
+                        >
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Téléphone *</label>
+                        <input 
+                            type="tel" 
+                            v-model="form.phone"
+                            placeholder="06 12 34 56 78" 
+                            required 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all"
+                        >
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Email (optionnel)</label>
+                        <input 
+                            type="email" 
+                            v-model="form.email"
+                            placeholder="jean.dupont@email.com" 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all"
+                        >
                     </div>
                     
                     <div class="text-left">
                         <label class="block text-sm font-bold text-slate-700 mb-2">Créneau préférentiel</label>
-                        <select class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all bg-white">
-                            <option>Immédiatement</option>
-                            <option>Dans 1 heure</option>
-                            <option>Ce matin (9h-12h)</option>
-                            <option>Cet après-midi (14h-18h)</option>
-                            <option>Demain matin</option>
+                        <select 
+                            v-model="form.message"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all bg-white"
+                        >
+                            <option value="Immédiatement">Immédiatement</option>
+                            <option value="Dans 1 heure">Dans 1 heure</option>
+                            <option value="Ce matin (9h-12h)">Ce matin (9h-12h)</option>
+                            <option value="Cet après-midi (14h-18h)">Cet après-midi (14h-18h)</option>
+                            <option value="Demain matin">Demain matin</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-brand-orange to-brand-red text-white font-bold py-4 rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+                    <button 
+                        type="submit" 
+                        :disabled="form.processing"
+                        class="w-full bg-gradient-to-r from-brand-orange to-brand-red text-white font-bold py-4 rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:scale-100"
+                    >
                         <i class="ph-bold ph-phone"></i>
-                        <span>Demander un rappel</span>
+                        <span>{{ form.processing ? 'Envoi...' : 'Demander un rappel' }}</span>
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+</style>

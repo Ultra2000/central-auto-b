@@ -1,18 +1,45 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
 
-// Load Oswald font for the license plate
-onMounted(() => {
+const props = defineProps({
+    prices: {
+        type: Object,
+        default: () => ({
+            plexiglass: '14.90',
+            alu: '12.90'
+        })
+    }
+});
+
+// Initialize Stripe
+let stripePromise = null;
+const loadingPayment = ref(false);
+
+onMounted(async () => {
+    // Load Oswald font for the license plate
     if (!document.querySelector('link[href*="Oswald"]')) {
         const link = document.createElement('link');
         link.href = 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap';
         link.rel = 'stylesheet';
         document.head.appendChild(link);
     }
+    
+    // Initialize Stripe
+    try {
+        stripePromise = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+    } catch (error) {
+        console.error('Error loading Stripe:', error);
+    }
 });
 
 const showOrderForm = ref(false);
+const deliveryCost = ref(null);
+const loadingDeliveryCost = ref(false);
+const deliveryError = ref('');
+
 const notification = ref({
     show: false,
     type: 'success',
@@ -42,23 +69,69 @@ const form = useForm({
     custom_text: '',
     material: 'plexiglass',
     quantity: 1,
-    unit_price: 14.90,
-    total_price: 14.90,
+    unit_price: parseFloat(props.prices.plexiglass),
+    total_price: parseFloat(props.prices.plexiglass),
     customer_name: '',
     customer_email: '',
     customer_phone: '',
     customer_address: '',
+    delivery_option: 'pickup',
+    delivery_city: '',
+    delivery_postal_code: '',
+    delivery_cost: 0,
 });
 
 const price = computed(() => {
-    return form.material === 'plexiglass' ? 14.90 : 12.90;
+    return form.material === 'plexiglass' ? parseFloat(props.prices.plexiglass) : parseFloat(props.prices.alu);
 });
 
 const totalPrice = computed(() => {
-    const total = price.value * form.quantity;
+    const plateTotal = price.value * form.quantity;
+    const delivery = deliveryCost.value ? parseFloat(deliveryCost.value) : 0;
+    const total = plateTotal + delivery;
     form.unit_price = price.value;
     form.total_price = total;
+    form.delivery_cost = delivery;
     return total.toFixed(2);
+});
+
+const checkDeliveryCost = async () => {
+    if (!form.delivery_postal_code || form.delivery_postal_code.length < 4) {
+        deliveryCost.value = null;
+        deliveryError.value = '';
+        return;
+    }
+
+    loadingDeliveryCost.value = true;
+    deliveryError.value = '';
+    
+    try {
+        const response = await axios.get(route('delivery-cost.get', form.delivery_postal_code));
+        deliveryCost.value = response.data.cost;
+        deliveryError.value = '';
+    } catch (error) {
+        deliveryCost.value = null;
+        deliveryError.value = error.response?.data?.message || 'Zone de livraison non disponible';
+    } finally {
+        loadingDeliveryCost.value = false;
+    }
+};
+
+// Watch pour le code postal
+watch(() => form.delivery_postal_code, () => {
+    if (form.delivery_option === 'delivery') {
+        checkDeliveryCost();
+    }
+});
+
+// Watch pour l'option de livraison
+watch(() => form.delivery_option, (option) => {
+    if (option === 'pickup') {
+        deliveryCost.value = null;
+        deliveryError.value = '';
+    } else if (form.delivery_postal_code) {
+        checkDeliveryCost();
+    }
 });
 
 const incrementQuantity = () => {
@@ -87,18 +160,35 @@ const handlePlateTypeChange = () => {
     }
 };
 
-const submitOrder = () => {
-    form.post(route('plate-orders.store'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            showOrderForm.value = false;
-            form.reset('customer_name', 'customer_email', 'customer_phone', 'customer_address');
-            showNotification('success', 'Votre commande a été envoyée avec succès ! Vous recevrez un email de confirmation sous peu.');
-        },
-        onError: () => {
-            showNotification('error', 'Une erreur est survenue lors de l\'envoi de votre commande. Veuillez réessayer.');
-        },
-    });
+const submitOrder = async () => {
+    if (!stripePromise) {
+        showNotification('error', 'Erreur lors de l\'initialisation du paiement. Veuillez réessayer.');
+        return;
+    }
+    
+    loadingPayment.value = true;
+    
+    try {
+        // Créer une session de paiement Stripe
+        const response = await axios.post(route('payment.checkout'), {
+            ...form.data(),
+        });
+        
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({
+            sessionId: response.data.sessionId
+        });
+        
+        if (error) {
+            console.error('Stripe error:', error);
+            showNotification('error', 'Erreur lors de la redirection vers le paiement: ' + error.message);
+        }
+    } catch (error) {
+        console.error('Payment error:', error);
+        showNotification('error', 'Une erreur est survenue lors du traitement de votre commande.');
+    } finally {
+        loadingPayment.value = false;
+    }
 };
 
 const getStarPosition = (index) => {
@@ -516,7 +606,123 @@ const departments = [
                                 >
                                 <span v-if="form.errors.customer_phone" class="text-sm text-red-600 mt-1 block">{{ form.errors.customer_phone }}</span>
                             </div>
+                        </div>
 
+                        <!-- Delivery Options -->
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-slate-900">Option de récupération</h4>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="relative cursor-pointer">
+                                    <input 
+                                        type="radio" 
+                                        name="delivery_option" 
+                                        value="pickup"
+                                        v-model="form.delivery_option"
+                                        class="peer sr-only"
+                                    >
+                                    <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand-blue peer-checked:bg-brand-blue/5 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <i class="ph-bold ph-storefront text-2xl text-brand-blue"></i>
+                                            <div>
+                                                <div class="font-semibold text-slate-900">Retrait en agence</div>
+                                                <div class="text-sm text-slate-600">Gratuit</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="relative cursor-pointer">
+                                    <input 
+                                        type="radio" 
+                                        name="delivery_option" 
+                                        value="delivery"
+                                        v-model="form.delivery_option"
+                                        class="peer sr-only"
+                                    >
+                                    <div class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand-blue peer-checked:bg-brand-blue/5 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <i class="ph-bold ph-truck text-2xl text-brand-blue"></i>
+                                            <div>
+                                                <div class="font-semibold text-slate-900">Livraison à domicile</div>
+                                                <div class="text-sm text-slate-600">Tarif selon zone</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Address (shown only if delivery is selected) -->
+                        <Transition
+                            enter-active-class="transition-all duration-300"
+                            enter-from-class="opacity-0 -translate-y-4"
+                            enter-to-class="opacity-100 translate-y-0"
+                            leave-active-class="transition-all duration-300"
+                            leave-from-class="opacity-100 translate-y-0"
+                            leave-to-class="opacity-0 -translate-y-4"
+                        >
+                            <div v-if="form.delivery_option === 'delivery'" class="space-y-4">
+                                <h4 class="font-bold text-slate-900">Adresse de livraison</h4>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Adresse *</label>
+                                    <textarea 
+                                        v-model="form.delivery_address"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all resize-none"
+                                        placeholder="123 Rue de la République"
+                                        rows="2"
+                                        :required="form.delivery_option === 'delivery'"
+                                    ></textarea>
+                                    <span v-if="form.errors.delivery_address" class="text-sm text-red-600 mt-1 block">{{ form.errors.delivery_address }}</span>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Ville *</label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.delivery_city"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all"
+                                        placeholder="Paris"
+                                        :required="form.delivery_option === 'delivery'"
+                                    >
+                                    <span v-if="form.errors.delivery_city" class="text-sm text-red-600 mt-1 block">{{ form.errors.delivery_city }}</span>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Code postal *</label>
+                                    <input 
+                                        type="text" 
+                                        v-model="form.delivery_postal_code"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all"
+                                        placeholder="97100"
+                                        :required="form.delivery_option === 'delivery'"
+                                    >
+                                    <span v-if="form.errors.delivery_postal_code" class="text-sm text-red-600 mt-1 block">{{ form.errors.delivery_postal_code }}</span>
+                                </div>
+
+                                <!-- Delivery Cost Display -->
+                                <div v-if="deliveryCost !== null" class="p-4 rounded-xl bg-green-50 border border-green-200">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <i class="ph-bold ph-check-circle text-green-600 text-xl"></i>
+                                            <span class="font-semibold text-slate-900">Frais de livraison</span>
+                                        </div>
+                                        <span class="text-xl font-bold text-green-600">{{ deliveryCost }} €</span>
+                                    </div>
+                                </div>
+
+                                <div v-else-if="form.delivery_postal_code && form.delivery_postal_code.length >= 5" class="p-4 rounded-xl bg-amber-50 border border-amber-200">
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph-bold ph-warning text-amber-600 text-xl"></i>
+                                        <span class="text-sm text-amber-900">Vérification du tarif de livraison...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Transition>
+
+                        <!-- Pickup Address (shown only if pickup is selected) -->
+                        <div v-if="form.delivery_option === 'pickup'" class="space-y-4">
                             <div>
                                 <label class="block text-sm font-semibold text-slate-700 mb-2">Adresse (optionnel)</label>
                                 <textarea 

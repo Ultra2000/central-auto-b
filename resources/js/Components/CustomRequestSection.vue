@@ -4,6 +4,28 @@ import { useForm } from '@inertiajs/vue3';
 
 const currentStep = ref(1);
 
+const notification = ref({
+    show: false,
+    type: 'success',
+    message: ''
+});
+
+const showNotification = (type, message) => {
+    notification.value = {
+        show: true,
+        type,
+        message
+    };
+    
+    setTimeout(() => {
+        notification.value.show = false;
+    }, 5000);
+};
+
+const closeNotification = () => {
+    notification.value.show = false;
+};
+
 const form = useForm({
     type: 'achat',
     category: '',
@@ -26,11 +48,18 @@ const prevStep = () => {
 };
 
 const submit = () => {
-    form.post('/leads', {
+    form.post(route('custom-requests.store'), {
+        preserveScroll: true,
         onSuccess: () => {
             form.reset();
             currentStep.value = 1;
-        }
+            showNotification('success', 'Votre demande a été envoyée avec succès ! Nous vous contacterons rapidement.');
+        },
+        onError: (errors) => {
+            console.log('Validation errors:', errors);
+            const firstError = Object.values(errors)[0];
+            showNotification('error', firstError || 'Une erreur est survenue lors de l\'envoi de votre demande. Veuillez vérifier les champs et réessayer.');
+        },
     });
 };
 </script>
@@ -140,7 +169,7 @@ const submit = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
                                 <label class="block text-sm font-semibold text-slate-300 mb-2">Budget Max / Loyer</label>
-                                <input v-model="form.budget" type="number" placeholder="Ex: 25000" class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors placeholder-slate-600">
+                                <input v-model="form.budget" type="text" placeholder="Ex: 25000" class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-colors placeholder-slate-600">
                             </div>
 
                             <div>
@@ -221,5 +250,64 @@ const submit = () => {
                 </form>
             </div>
         </div>
+
+        <!-- Notification Toast -->
+        <Transition name="slide-down">
+            <div v-if="notification.show" class="fixed top-6 right-6 z-[60] max-w-md w-full">
+                <div :class="[
+                    'rounded-2xl shadow-2xl p-6 flex items-start gap-4 border-2',
+                    notification.type === 'success' ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500'
+                ]">
+                    <div :class="[
+                        'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
+                        notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+                    ]">
+                        <i v-if="notification.type === 'success'" class="ph-bold ph-check text-white text-xl"></i>
+                        <i v-else class="ph-bold ph-x text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 :class="[
+                            'font-bold mb-1',
+                            notification.type === 'success' ? 'text-green-900' : 'text-red-900'
+                        ]">
+                            {{ notification.type === 'success' ? 'Demande envoyée' : 'Erreur' }}
+                        </h4>
+                        <p :class="[
+                            'text-sm',
+                            notification.type === 'success' ? 'text-green-700' : 'text-red-700'
+                        ]">
+                            {{ notification.message }}
+                        </p>
+                    </div>
+                    <button 
+                        @click="closeNotification"
+                        :class="[
+                            'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors',
+                            notification.type === 'success' ? 'hover:bg-green-200 text-green-700' : 'hover:bg-red-200 text-red-700'
+                        ]"
+                    >
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+            </div>
+        </Transition>
     </section>
 </template>
+
+<style scoped>
+/* Notification Transitions */
+.slide-down-enter-active,
+.slide-down-leave-active {
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.slide-down-enter-from {
+    opacity: 0;
+    transform: translateY(-100px) scale(0.9);
+}
+
+.slide-down-leave-to {
+    opacity: 0;
+    transform: translateX(100px) scale(0.9);
+}
+</style>

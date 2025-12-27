@@ -13,12 +13,9 @@ const showingNavigationDropdown = ref(false);
         <!-- Sidebar - Desktop -->
         <aside class="w-64 bg-brand-dark text-white hidden md:flex flex-col fixed inset-y-0 left-0 z-40 transition-all duration-300">
             <!-- Logo Area -->
-            <div class="h-20 flex items-center px-8 border-b border-white/10 flex-shrink-0">
-                <Link :href="route('admin.dashboard')" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-orange to-brand-red flex items-center justify-center shadow-lg shadow-brand-red/20 group-hover:scale-110 transition-transform">
-                        <span class="font-bold text-white text-xl">C</span>
-                    </div>
-                    <span class="font-bold text-lg tracking-wide group-hover:text-brand-orange transition-colors">ADMIN</span>
+            <div class="h-20 flex items-center px-6 border-b border-white/10 flex-shrink-0">
+                <Link :href="route('admin.dashboard')" class="flex items-center gap-3 group w-full">
+                    <img src="/images/unnamed.png" alt="Central Auto B" class="h-12 w-auto object-contain brightness-0 invert group-hover:scale-105 transition-transform duration-300">
                 </Link>
             </div>
 
@@ -60,6 +57,44 @@ const showingNavigationDropdown = ref(false);
                     <i class="ph-fill ph-article text-xl" :class="route().current('admin.plate-orders.*') ? 'text-white' : 'text-slate-500 group-hover:text-brand-orange'"></i>
                     <span class="font-medium">Commandes Plaques</span>
                 </Link>
+
+                <Link :href="route('admin.custom-requests.index')" 
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group"
+                    :class="route().current('admin.custom-requests.*') ? 'bg-brand-gradient text-white shadow-lg shadow-brand-orange/30' : 'text-slate-400 hover:bg-white/5 hover:text-white'"
+                >
+                    <i class="ph-fill ph-sparkle text-xl" :class="route().current('admin.custom-requests.*') ? 'text-white' : 'text-slate-500 group-hover:text-brand-orange'"></i>
+                    <span class="font-medium">Demandes Personnalisées</span>
+                </Link>
+
+                <Link :href="route('admin.vehicle-interests.index')" 
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group"
+                    :class="route().current('admin.vehicle-interests.*') ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30' : 'text-slate-400 hover:bg-white/5 hover:text-white'"
+                >
+                    <i class="ph-fill ph-calendar-check text-xl" :class="route().current('admin.vehicle-interests.*') ? 'text-white' : 'text-slate-500 group-hover:text-brand-orange'"></i>
+                    <span class="font-medium">Demandes Véhicules</span>
+                </Link>
+
+                <div class="pt-8">
+                    <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Configuration</p>
+                    <Link :href="route('admin.visit-availabilities.index')" 
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group mb-2"
+                        :class="route().current('admin.visit-availabilities.*') ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/30' : 'text-slate-400 hover:bg-white/5 hover:text-white'"
+                    >
+                        <i class="ph-fill ph-calendar-dots text-xl" :class="route().current('admin.visit-availabilities.*') ? 'text-white' : 'text-slate-500 group-hover:text-brand-orange'"></i>
+                        <span class="font-medium" :class="route().current('admin.visit-availabilities.*') ? 'text-white' : 'text-slate-300'">Disponibilités Visites</span>
+                    </Link>
+                    <Link :href="route('admin.delivery-zones.index')" 
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group mb-2"
+                        :class="route().current('admin.delivery-zones.*') ? 'bg-brand-orange text-white shadow-lg shadow-brand-orange/30' : 'text-slate-400 hover:bg-white/5 hover:text-white'"
+                    >
+                        <i class="ph-fill ph-truck text-xl" :class="route().current('admin.delivery-zones.*') ? 'text-white' : 'text-slate-500 group-hover:text-brand-orange'"></i>
+                        <span class="font-medium" :class="route().current('admin.delivery-zones.*') ? 'text-white' : 'text-slate-300'">Zones de Livraison</span>
+                    </Link>
+                    <Link :href="route('admin.settings.index')" :class="route().current('admin.settings.*') ? 'bg-brand-gradient shadow-lg shadow-brand-orange/20' : 'hover:bg-white/5'" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group mb-2">
+                        <i class="ph-fill ph-gear text-xl" :class="route().current('admin.settings.*') ? 'text-white' : 'text-slate-500 group-hover:text-brand-orange'"></i>
+                        <span class="font-medium" :class="route().current('admin.settings.*') ? 'text-white' : 'text-slate-300'">Paramètres</span>
+                    </Link>
+                </div>
 
                 <div class="pt-8">
                     <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Site Web</p>

@@ -8,6 +8,9 @@ import CustomRequestSection from '@/Components/CustomRequestSection.vue';
 import Simulator from '@/Components/Simulator.vue';
 import PlatesSection from '@/Components/PlatesSection.vue';
 import ContactSection from '@/Components/ContactSection.vue';
+import { useTranslations } from '@/Composables/useTranslations';
+
+const { __ } = useTranslations();
 
 defineProps({
     canLogin: Boolean,
@@ -18,7 +21,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Accueil" />
+    <Head :title="__('home')" />
 
     <MainLayout>
         <!-- Hero Section -->
@@ -49,29 +52,29 @@ defineProps({
                     <div class="text-left">
                         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
                             <span class="w-2 h-2 bg-brand-orange rounded-full animate-pulse"></span>
-                            <span class="text-white/90 text-sm font-medium tracking-wide">Votre partenaire automobile de confiance</span>
+                            <span class="text-white/90 text-sm font-medium tracking-wide">{{ __('trusted_partner') }}</span>
                         </div>
                         
                         <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-[1.1]">
-                            Trouvez le véhicule
+                            {{ __('find_dream_vehicle') }}
                             <span class="block mt-2">
-                                <span class="text-gradient">de vos rêves</span>
+                                <span class="text-gradient">{{ __('of_your_dreams') }}</span>
                             </span>
                         </h1>
                         
                         <p class="text-xl text-slate-300 mb-10 max-w-lg leading-relaxed">
-                            Vente, reprise, location — une expertise automobile complète pour concrétiser votre projet en toute sérénité.
+                            {{ __('hero_description') }}
                         </p>
                         
                         <div class="flex flex-col sm:flex-row gap-4 mb-12">
                             <button class="group bg-brand-gradient hover:opacity-90 text-white px-8 py-5 rounded-2xl font-bold text-lg transition-all shadow-2xl shadow-brand-red/30 flex items-center justify-center gap-3 hover:shadow-brand-red/50 btn-glow relative overflow-hidden hover:-translate-y-1">
                                 <i class="ph-bold ph-car-profile text-xl relative z-10"></i> 
-                                <span class="relative z-10">Explorer le stock</span>
+                                <span class="relative z-10">{{ __('explore_stock') }}</span>
                                 <i class="ph-bold ph-arrow-right relative z-10 group-hover:translate-x-1 transition-transform"></i>
                             </button>
                             <button class="group bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/30 text-white px-8 py-5 rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-3 hover:-translate-y-1">
                                 <i class="ph-bold ph-magnifying-glass text-xl"></i> 
-                                <span>Recherche sur mesure</span>
+                                <span>{{ __('custom_search') }}</span>
                             </button>
                         </div>
 
@@ -81,19 +84,19 @@ defineProps({
                                 <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
                                     <i class="ph-fill ph-shield-check text-green-400 text-xl"></i>
                                 </div>
-                                <span class="text-white/80 text-sm font-medium">Garantie incluse</span>
+                                <span class="text-white/80 text-sm font-medium">{{ __('warranty_included') }}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="w-10 h-10 rounded-xl bg-brand-orange/20 flex items-center justify-center">
                                     <i class="ph-fill ph-handshake text-brand-orange text-xl"></i>
                                 </div>
-                                <span class="text-white/80 text-sm font-medium">Reprise estimée</span>
+                                <span class="text-white/80 text-sm font-medium">{{ __('trade_in_estimate') }}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center">
                                     <i class="ph-fill ph-credit-card text-brand-blue text-xl"></i>
                                 </div>
-                                <span class="text-white/80 text-sm font-medium">Financement facile</span>
+                                <span class="text-white/80 text-sm font-medium">{{ __('easy_financing') }}</span>
                             </div>
                         </div>
                     </div>
@@ -121,7 +124,7 @@ defineProps({
                                         </div>
                                         <div class="text-right">
                                             <div v-if="featuredVehicle.type === 'sale'" class="text-2xl md:text-3xl font-extrabold text-white">{{ featuredVehicle.price?.toLocaleString() }} €</div>
-                                            <div v-else class="text-2xl md:text-3xl font-extrabold text-white">{{ featuredVehicle.rent_price }} €<span class="text-sm">/jour</span></div>
+                                            <div v-else class="text-2xl md:text-3xl font-extrabold text-white">{{ featuredVehicle.rent_price }} €<span class="text-sm">{{ __('per_day') }}</span></div>
                                             <p v-if="featuredVehicle.mileage" class="text-slate-400 text-sm">{{ featuredVehicle.mileage?.toLocaleString() }} km</p>
                                         </div>
                                     </div>
@@ -136,7 +139,7 @@ defineProps({
                                     </div>
                                     <div>
                                         <p class="text-xl md:text-2xl font-bold text-brand-dark">50+</p>
-                                        <p class="text-slate-500 text-xs font-medium">En stock</p>
+                                        <p class="text-slate-500 text-xs font-medium">{{ __('in_stock') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -148,7 +151,7 @@ defineProps({
                                     </div>
                                     <div>
                                         <p class="text-xl md:text-2xl font-bold text-brand-dark">4.9/5</p>
-                                        <p class="text-slate-500 text-xs font-medium">Avis clients</p>
+                                        <p class="text-slate-500 text-xs font-medium">{{ __('customer_reviews') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +160,7 @@ defineProps({
                             <!-- Fallback if no featured vehicle -->
                             <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10">
                                 <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                                     alt="Véhicule Premium" 
+                                     :alt="__('premium_vehicle')" 
                                      class="w-full h-[350px] md:h-[450px] object-cover">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                             </div>

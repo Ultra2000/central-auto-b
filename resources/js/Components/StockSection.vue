@@ -104,8 +104,15 @@ const scrollCarousel = (type, direction) => {
                         <div v-for="car in carsForSale" :key="car.id" class="carousel-card bg-white rounded-3xl shadow-lg border-2 border-slate-100 overflow-hidden car-card transition-all duration-500 group flex flex-col relative">
                             <div class="relative h-72 overflow-hidden">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <img :src="car.main_image || 'https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'" :alt="car.make + ' ' + car.model" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-                                <span v-if="car.badge_type" class="absolute top-5 left-5 bg-brand-orange text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm">
+                                <img :src="car.main_image || 'https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'" 
+                                    :alt="car.make + ' ' + car.model" 
+                                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                                    :class="{ 'grayscale': car.status === 'sold' }">
+                                
+                                <span v-if="car.status === 'sold'" class="absolute top-5 left-5 bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm animate-pulse">
+                                    VENDU
+                                </span>
+                                <span v-else-if="car.badge_type" class="absolute top-5 left-5 bg-brand-orange text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm">
                                     {{ car.badge_type }}
                                 </span>
                                 <div class="absolute bottom-5 right-5 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -119,7 +126,7 @@ const scrollCarousel = (type, direction) => {
                                         <p class="text-slate-500 font-medium text-base">{{ car.model }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-2xl font-extrabold text-brand-blue">{{ car.price?.toLocaleString() }} €</p>
+                                        <p class="text-2xl font-extrabold" :class="car.status === 'sold' ? 'text-slate-400 line-through' : 'text-brand-blue'">{{ car.price?.toLocaleString() }} €</p>
                                     </div>
                                 </div>
                                 
@@ -138,9 +145,12 @@ const scrollCarousel = (type, direction) => {
                                     </div>
                                 </div>
 
-                                <button @click="openModal(car)" class="w-full mt-6 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-brand-blue hover:to-brand-blue text-white font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-1 transform relative overflow-hidden group/btn">
-                                    <span class="relative z-10">Je suis intéressé</span>
-                                    <i class="ph-bold ph-arrow-right relative z-10 group-hover/btn:translate-x-2 transition-transform"></i>
+                                <button @click="openModal(car)" 
+                                    class="w-full mt-6 font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-1 transform relative overflow-hidden group/btn"
+                                    :class="car.status === 'sold' ? 'bg-slate-800 text-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-slate-900 to-slate-800 hover:from-brand-blue hover:to-brand-blue text-white'">
+                                    <span class="relative z-10">{{ car.status === 'sold' ? 'Véhicule Vendu' : 'Je suis intéressé' }}</span>
+                                    <i v-if="car.status !== 'sold'" class="ph-bold ph-arrow-right relative z-10 group-hover/btn:translate-x-2 transition-transform"></i>
+                                    <i v-else class="ph-bold ph-lock relative z-10"></i>
                                 </button>
                             </div>
                         </div>
@@ -191,8 +201,15 @@ const scrollCarousel = (type, direction) => {
                         <div v-for="car in carsForRent" :key="car.id" class="carousel-card bg-white rounded-3xl shadow-lg border-2 border-slate-100 overflow-hidden car-card transition-all duration-500 group flex flex-col relative">
                             <div class="relative h-72 overflow-hidden">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                <img :src="car.main_image || 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'" :alt="car.make + ' ' + car.model" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-                                <span v-if="car.badge_type" class="absolute top-5 left-5 bg-brand-red text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm">
+                                <img :src="car.main_image || 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'" 
+                                    :alt="car.make + ' ' + car.model" 
+                                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                                    :class="{ 'grayscale': car.status === 'sold' }">
+                                
+                                <span v-if="car.status === 'sold'" class="absolute top-5 left-5 bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm animate-pulse">
+                                    LOUÉ
+                                </span>
+                                <span v-else-if="car.badge_type" class="absolute top-5 left-5 bg-brand-red text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wide shadow-lg z-20 backdrop-blur-sm">
                                     {{ car.badge_type }}
                                 </span>
                                 <div class="absolute bottom-5 right-5 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -206,7 +223,7 @@ const scrollCarousel = (type, direction) => {
                                         <p class="text-slate-500 font-medium text-base">{{ car.model }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-2xl font-extrabold text-brand-red">{{ car.rent_price }} €<span class="text-sm">/j</span></p>
+                                        <p class="text-2xl font-extrabold" :class="car.status === 'sold' ? 'text-slate-400 line-through' : 'text-brand-red'">{{ car.rent_price }} €<span class="text-sm">/j</span></p>
                                     </div>
                                 </div>
                                 
@@ -225,9 +242,12 @@ const scrollCarousel = (type, direction) => {
                                     </div>
                                 </div>
 
-                                <button @click="openModal(car)" class="w-full mt-6 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-brand-blue hover:to-brand-blue text-white font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-1 transform relative overflow-hidden group/btn">
-                                    <span class="relative z-10">Je suis intéressé</span>
-                                    <i class="ph-bold ph-arrow-right relative z-10 group-hover/btn:translate-x-2 transition-transform"></i>
+                                <button @click="openModal(car)" 
+                                    class="w-full mt-6 font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-1 transform relative overflow-hidden group/btn"
+                                    :class="car.status === 'sold' ? 'bg-slate-800 text-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-slate-900 to-slate-800 hover:from-brand-blue hover:to-brand-blue text-white'">
+                                    <span class="relative z-10">{{ car.status === 'sold' ? 'Déjà Loué' : 'Je suis intéressé' }}</span>
+                                    <i v-if="car.status !== 'sold'" class="ph-bold ph-arrow-right relative z-10 group-hover/btn:translate-x-2 transition-transform"></i>
+                                    <i v-else class="ph-bold ph-lock relative z-10"></i>
                                 </button>
                             </div>
                         </div>

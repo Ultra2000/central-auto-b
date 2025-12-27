@@ -1,11 +1,103 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+} from 'chart.js';
+import { Line, Doughnut } from 'vue-chartjs';
 
-defineProps({
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
+
+const props = defineProps({
     stats: Object,
-    recent_leads: Array
+    charts: Object,
+    recent_activities: Array
 });
+
+// Chart Options
+const lineChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        }
+    },
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: '#f1f5f9'
+            }
+        },
+        x: {
+            grid: {
+                display: false
+            }
+        }
+    }
+};
+
+const doughnutChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            position: 'bottom',
+            labels: {
+                usePointStyle: true,
+                padding: 20
+            }
+        }
+    }
+};
+
+// Chart Data
+const lineChartData = {
+    labels: props.charts?.leads_evolution?.labels || [],
+    datasets: [{
+        label: 'Demandes',
+        backgroundColor: '#3b82f6',
+        borderColor: '#3b82f6',
+        data: props.charts?.leads_evolution?.data || [],
+        tension: 0.4,
+        fill: true
+    }]
+};
+
+const doughnutChartData = {
+    labels: props.charts?.stock_by_make?.labels || [],
+    datasets: [{
+        backgroundColor: ['#3b82f6', '#f97316', '#10b981', '#8b5cf6', '#ef4444'],
+        data: props.charts?.stock_by_make?.data || []
+    }]
+};
+
+const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
 </script>
 
 <template>
@@ -91,163 +183,55 @@ defineProps({
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="w-full max-w-full grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
-            <Link :href="route('admin.vehicles.create')" class="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 hover:border-brand-blue hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue group-hover:bg-brand-blue group-hover:text-white transition-colors">
-                    <i class="ph-bold ph-plus text-lg"></i>
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Evolution Chart -->
+            <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <h3 class="font-bold text-lg text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="ph-fill ph-trend-up text-brand-blue"></i>
+                    Évolution des demandes (30 jours)
+                </h3>
+                <div class="h-[300px]">
+                    <Line :data="lineChartData" :options="lineChartOptions" />
                 </div>
-                <span class="text-sm font-semibold text-slate-600 group-hover:text-brand-dark">Ajouter véhicule</span>
-            </Link>
-            <Link :href="route('admin.vehicles.index')" class="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 hover:border-brand-orange hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-lg bg-brand-orange/10 flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-colors">
-                    <i class="ph-bold ph-car text-lg"></i>
+            </div>
+
+            <!-- Stock Distribution -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <h3 class="font-bold text-lg text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="ph-fill ph-chart-pie-slice text-brand-orange"></i>
+                    Répartition par Marque
+                </h3>
+                <div class="h-[300px]">
+                    <Doughnut :data="doughnutChartData" :options="doughnutChartOptions" />
                 </div>
-                <span class="text-sm font-semibold text-slate-600 group-hover:text-brand-dark">Voir le stock</span>
-            </Link>
-            <Link :href="route('admin.leads.index')" class="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 hover:border-green-500 hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors">
-                    <i class="ph-bold ph-users text-lg"></i>
-                </div>
-                <span class="text-sm font-semibold text-slate-600 group-hover:text-brand-dark">Tous les leads</span>
-            </Link>
-            <a href="/" target="_blank" class="bg-white border border-slate-100 rounded-xl p-4 flex items-center gap-3 hover:border-purple-500 hover:shadow-md transition-all group">
-                <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors">
-                    <i class="ph-bold ph-globe text-lg"></i>
-                </div>
-                <span class="text-sm font-semibold text-slate-600 group-hover:text-brand-dark">Voir le site</span>
-            </a>
+            </div>
         </div>
 
-        <!-- Recent Leads -->
-        <div class="w-full max-w-full bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="p-4 md:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-                <h3 class="text-lg font-bold text-brand-dark flex items-center gap-2">
-                    <i class="ph-fill ph-clock-counter-clockwise text-brand-blue"></i>
-                    Derniers contacts reçus
+        <!-- Recent Activity Feed -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                    <i class="ph-fill ph-clock-counter-clockwise text-slate-400"></i>
+                    Dernières activités
                 </h3>
-                <Link :href="route('admin.leads.index')" class="text-sm font-semibold text-brand-blue hover:text-brand-dark transition-colors flex items-center gap-1">
-                    Voir tout
-                    <i class="ph-bold ph-arrow-right"></i>
-                </Link>
             </div>
-            
-            <div v-if="!recent_leads || recent_leads.length === 0" class="p-12 text-center">
-                <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                    <i class="ph-duotone ph-inbox text-3xl text-slate-400"></i>
-                </div>
-                <p class="text-slate-500 font-medium">Aucun contact récent</p>
-                <p class="text-slate-400 text-sm mt-1">Les nouveaux leads apparaîtront ici</p>
-            </div>
-            
-            <!-- Mobile Cards View -->
-            <div v-else class="md:hidden divide-y divide-slate-100">
-                <div v-for="lead in recent_leads" :key="lead.id" class="p-4 hover:bg-slate-50 transition-colors">
-                    <div class="flex items-start justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm">
-                                {{ lead.name?.charAt(0)?.toUpperCase() || '?' }}
-                            </div>
-                            <div>
-                                <div class="font-bold text-brand-dark text-sm">{{ lead.name }}</div>
-                                <div class="text-xs text-slate-400">{{ lead.email || lead.phone }}</div>
-                            </div>
-                        </div>
-                        <span class="px-2 py-1 text-xs font-bold rounded-full"
-                            :class="{
-                                'bg-red-100 text-red-700': lead.status === 'new',
-                                'bg-orange-100 text-orange-700': lead.status === 'contacted',
-                                'bg-slate-100 text-slate-600': lead.status === 'closed'
-                            }">
-                            {{ lead.status === 'new' ? 'Nouveau' : (lead.status === 'contacted' ? 'Traité' : 'Clôturé') }}
-                        </span>
+            <div class="divide-y divide-slate-100">
+                <div v-for="(activity, index) in recent_activities" :key="index" class="p-4 hover:bg-slate-50 transition-colors flex items-center gap-4">
+                    <div :class="['w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0', activity.color]">
+                        <i :class="['ph-fill text-lg', activity.icon]"></i>
                     </div>
-                    <div class="flex items-center justify-between mt-3">
-                        <span class="px-2 py-1 inline-flex text-xs font-semibold rounded-lg" 
-                            :class="{
-                                'bg-blue-50 text-blue-600': lead.type === 'contact',
-                                'bg-green-50 text-green-600': lead.type === 'callback',
-                                'bg-purple-50 text-purple-600': lead.type === 'vehicle_inquiry'
-                            }">
-                            <i class="ph-fill mr-1" :class="{
-                                'ph-envelope': lead.type === 'contact',
-                                'ph-phone': lead.type === 'callback',
-                                'ph-car': lead.type === 'vehicle_inquiry'
-                            }"></i>
-                            {{ lead.type === 'contact' ? 'Message' : (lead.type === 'callback' ? 'Rappel' : 'Véhicule') }}
-                        </span>
-                        <span class="text-xs text-slate-400">
-                            {{ new Date(lead.created_at).toLocaleDateString('fr-FR') }}
-                        </span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-800">{{ activity.title }}</p>
+                        <p class="text-xs text-slate-500 truncate">{{ activity.description }}</p>
+                    </div>
+                    <div class="text-xs text-slate-400 whitespace-nowrap">
+                        {{ formatDate(activity.date) }}
                     </div>
                 </div>
-            </div>
-
-            <!-- Desktop Table View -->
-            <div v-if="recent_leads && recent_leads.length > 0" class="hidden md:block overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-100">
-                    <thead class="bg-slate-50/80">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Contact</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Type</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-slate-100">
-                        <tr v-for="lead in recent_leads" :key="lead.id" class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-sm">
-                                        {{ lead.name?.charAt(0)?.toUpperCase() || '?' }}
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-brand-dark">{{ lead.name }}</div>
-                                        <div class="text-xs text-slate-400">{{ lead.email || lead.phone }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-lg" 
-                                    :class="{
-                                        'bg-blue-50 text-blue-700': lead.type === 'contact',
-                                        'bg-green-50 text-green-700': lead.type === 'callback',
-                                        'bg-purple-50 text-purple-700': lead.type === 'vehicle_inquiry'
-                                    }">
-                                    <i class="ph-fill mr-1.5" :class="{
-                                        'ph-envelope': lead.type === 'contact',
-                                        'ph-phone': lead.type === 'callback',
-                                        'ph-car': lead.type === 'vehicle_inquiry'
-                                    }"></i>
-                                    {{ lead.type === 'contact' ? 'Message' : (lead.type === 'callback' ? 'Rappel' : 'Véhicule') }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-600 font-medium">
-                                    {{ new Date(lead.created_at).toLocaleDateString('fr-FR') }}
-                                </div>
-                                <div class="text-xs text-slate-400">
-                                    {{ new Date(lead.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1.5 inline-flex items-center gap-1.5 text-xs leading-5 font-bold rounded-lg"
-                                    :class="{
-                                        'bg-red-100 text-red-700': lead.status === 'new',
-                                        'bg-orange-100 text-orange-700': lead.status === 'contacted',
-                                        'bg-slate-100 text-slate-600': lead.status === 'closed'
-                                    }">
-                                    <span class="w-1.5 h-1.5 rounded-full" :class="{
-                                        'bg-red-500': lead.status === 'new',
-                                        'bg-orange-500': lead.status === 'contacted',
-                                        'bg-slate-400': lead.status === 'closed'
-                                    }"></span>
-                                    {{ lead.status === 'new' ? 'Nouveau' : (lead.status === 'contacted' ? 'Traité' : 'Clôturé') }}
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div v-if="recent_activities.length === 0" class="p-8 text-center text-slate-500">
+                    Aucune activité récente
+                </div>
             </div>
         </div>
     </AdminLayout>

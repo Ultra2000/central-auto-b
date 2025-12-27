@@ -1,11 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head, usePage, router } from '@inertiajs/vue3';
 import MainLayout from '@/Layouts/MainLayout.vue';
 import CarModal from '@/Components/CarModal.vue';
 
 const props = defineProps({
-    // In a real app, we might pass initial filters or data here
+    vehicles: Object
 });
 
 const selectedCar = ref(null);
@@ -19,11 +19,14 @@ const openModal = (car) => {
         carData.mileage = formatMileage(car.mileage);
     } else {
         carData.rentPrice = formatPrice(car.price) + ' / mois';
-        carData.seats = '5 places'; // Mock data
+        carData.seats = '5 places';
     }
-    // Mock images array if not present
-    if (!carData.images) {
-        carData.images = [carData.image, carData.image, carData.image];
+    // Use main_image if available (already includes /storage/ prefix from backend)
+    if (car.main_image) {
+        carData.image = car.main_image;
+        carData.images = [car.main_image];
+    } else if (!carData.images || !carData.images.length) {
+        carData.images = [carData.image || '/images/unnamed.png'];
     }
     
     selectedCar.value = carData;
@@ -46,133 +49,44 @@ const page = usePage();
 const urlParams = new URLSearchParams(window.location.search);
 const initialType = urlParams.get('type') || 'all';
 
-// Mock Data
-const vehicles = ref([
-    {
-        id: 1,
-        make: 'BMW',
-        model: 'M4 Competition',
-        year: 2023,
-        price: 89900,
-        mileage: 12500,
-        fuel: 'Essence',
-        transmission: 'Auto',
-        type: 'sale',
-        image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['GPS', 'Cuir', 'Toit ouvrant']
-    },
-    {
-        id: 2,
-        make: 'Mercedes',
-        model: 'C63 AMG',
-        year: 2022,
-        price: 75000,
-        mileage: 18000,
-        fuel: 'Essence',
-        transmission: 'Auto',
-        type: 'sale',
-        image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['Caméra 360', 'Burmester', 'Affichage tête haute']
-    },
-    {
-        id: 3,
-        make: 'Audi',
-        model: 'RS6 Avant',
-        year: 2024,
-        price: 120000,
-        mileage: 5000,
-        fuel: 'Essence',
-        transmission: 'Auto',
-        type: 'sale',
-        image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['Quattro', 'Bang & Olufsen', 'Sièges sport']
-    },
-    {
-        id: 4,
-        make: 'Porsche',
-        model: '911 GT3',
-        year: 2023,
-        price: 2500, // Rent price per day/month? Let's assume rent prices are lower
-        mileage: 8000,
-        fuel: 'Essence',
-        transmission: 'Auto',
-        type: 'rent',
-        image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['Chrono Pack', 'Lift System', 'Ceramic Brakes']
-    },
-    {
-        id: 5,
-        make: 'Range Rover',
-        model: 'Sport SVR',
-        year: 2023,
-        price: 1800,
-        mileage: 15000,
-        fuel: 'Essence',
-        transmission: 'Auto',
-        type: 'rent',
-        image: 'https://images.unsplash.com/photo-1606220838315-056192d5e927?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['Toit pano', 'Meridian', 'Suspension air']
-    },
-    {
-        id: 6,
-        make: 'Tesla',
-        model: 'Model 3 Performance',
-        year: 2023,
-        price: 45000,
-        mileage: 10000,
-        fuel: 'Électrique',
-        transmission: 'Auto',
-        type: 'sale',
-        image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['Autopilot', 'Jantes 20"', 'Intérieur blanc']
-    },
-    {
-        id: 7,
-        make: 'Peugeot',
-        model: '3008 Hybrid',
-        year: 2022,
-        price: 32000,
-        mileage: 25000,
-        fuel: 'Hybride',
-        transmission: 'Auto',
-        type: 'sale',
-        image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['i-Cockpit', 'Toit Black Diamond', 'Hayon mains libres']
-    },
-    {
-        id: 8,
-        make: 'Volkswagen',
-        model: 'Golf 8 R',
-        year: 2023,
-        price: 55000,
-        mileage: 9000,
-        fuel: 'Essence',
-        transmission: 'Auto',
-        type: 'sale',
-        image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        features: ['Akrapovic', 'DCC', 'Harman Kardon']
-    }
-]);
-
 // Filters State
 const filters = ref({
     search: '',
     type: initialType,
     make: 'all',
+    model: 'all',
     fuel: [],
     transmission: [],
-    sort: 'newest'
+    sort: 'newest',
+    priceMin: null,
+    priceMax: null,
+    yearMin: null,
+    yearMax: null,
+    mileageMax: null
 });
 
 // Unique Makes for Dropdown
 const makes = computed(() => {
-    const allMakes = vehicles.value.map(v => v.make);
+    if (!props.vehicles?.data) return [];
+    const allMakes = props.vehicles.data.map(v => v.make);
     return [...new Set(allMakes)].sort();
+});
+
+// Unique Models for Dropdown (dependent on selected Make)
+const models = computed(() => {
+    if (!props.vehicles?.data) return [];
+    let filtered = props.vehicles.data;
+    if (filters.value.make !== 'all') {
+        filtered = filtered.filter(v => v.make === filters.value.make);
+    }
+    const allModels = filtered.map(v => v.model);
+    return [...new Set(allModels)].sort();
 });
 
 // Filtered & Sorted Vehicles
 const filteredVehicles = computed(() => {
-    let result = vehicles.value;
+    if (!props.vehicles?.data) return [];
+    let result = props.vehicles.data;
 
     // Filter by Type
     if (filters.value.type !== 'all') {
@@ -182,6 +96,38 @@ const filteredVehicles = computed(() => {
     // Filter by Make
     if (filters.value.make !== 'all') {
         result = result.filter(v => v.make === filters.value.make);
+    }
+
+    // Filter by Model
+    if (filters.value.model !== 'all') {
+        result = result.filter(v => v.model === filters.value.model);
+    }
+
+    // Filter by Price
+    if (filters.value.priceMin) {
+        result = result.filter(v => {
+            const price = v.type === 'sale' ? v.price : v.rent_price;
+            return price >= filters.value.priceMin;
+        });
+    }
+    if (filters.value.priceMax) {
+        result = result.filter(v => {
+            const price = v.type === 'sale' ? v.price : v.rent_price;
+            return price <= filters.value.priceMax;
+        });
+    }
+
+    // Filter by Year
+    if (filters.value.yearMin) {
+        result = result.filter(v => v.year >= filters.value.yearMin);
+    }
+    if (filters.value.yearMax) {
+        result = result.filter(v => v.year <= filters.value.yearMax);
+    }
+
+    // Filter by Mileage
+    if (filters.value.mileageMax) {
+        result = result.filter(v => v.mileage <= filters.value.mileageMax);
     }
 
     // Filter by Search
@@ -216,9 +162,15 @@ const resetFilters = () => {
         search: '',
         type: 'all',
         make: 'all',
+        model: 'all',
         fuel: [],
         transmission: [],
-        sort: 'newest'
+        sort: 'newest',
+        priceMin: null,
+        priceMax: null,
+        yearMin: null,
+        yearMax: null,
+        mileageMax: null
     };
 };
 
@@ -306,13 +258,46 @@ const formatMileage = (km) => {
                                 </div>
                             </div>
 
-                            <!-- Make Filter -->
+                            <!-- Make & Model Filter -->
+                            <div class="mb-6 space-y-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-2">Marque</label>
+                                    <select v-model="filters.make" @change="filters.model = 'all'" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm appearance-none cursor-pointer">
+                                        <option value="all">Toutes les marques</option>
+                                        <option v-for="make in makes" :key="make" :value="make">{{ make }}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-2">Modèle</label>
+                                    <select v-model="filters.model" :disabled="filters.make === 'all'" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <option value="all">Tous les modèles</option>
+                                        <option v-for="model in models" :key="model" :value="model">{{ model }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Price Range -->
                             <div class="mb-6">
-                                <label class="block text-sm font-bold text-slate-700 mb-3">Marque</label>
-                                <select v-model="filters.make" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm appearance-none cursor-pointer">
-                                    <option value="all">Toutes les marques</option>
-                                    <option v-for="make in makes" :key="make" :value="make">{{ make }}</option>
-                                </select>
+                                <label class="block text-sm font-bold text-slate-700 mb-3">Prix {{ filters.type === 'rent' ? '(€/jour)' : '(€)' }}</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" v-model="filters.priceMin" placeholder="Min" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm">
+                                    <input type="number" v-model="filters.priceMax" placeholder="Max" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm">
+                                </div>
+                            </div>
+
+                            <!-- Year Range -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-bold text-slate-700 mb-3">Année</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" v-model="filters.yearMin" placeholder="De" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm">
+                                    <input type="number" v-model="filters.yearMax" placeholder="À" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm">
+                                </div>
+                            </div>
+
+                            <!-- Mileage Max -->
+                            <div class="mb-6" v-if="filters.type !== 'rent'">
+                                <label class="block text-sm font-bold text-slate-700 mb-3">Kilométrage max</label>
+                                <input type="number" v-model="filters.mileageMax" placeholder="Ex: 100000" class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/10 transition-all text-sm">
                             </div>
 
                             <!-- Fuel Filter -->
@@ -369,11 +354,19 @@ const formatMileage = (km) => {
                             <div v-for="vehicle in filteredVehicles" :key="vehicle.id" class="group bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                                 <!-- Image -->
                                 <div class="relative h-48 overflow-hidden">
-                                    <div class="absolute top-3 left-3 z-10">
-                                        <span v-if="vehicle.type === 'sale'" class="px-3 py-1 rounded-lg bg-brand-orange text-white text-xs font-bold shadow-lg">Vente</span>
-                                        <span v-else class="px-3 py-1 rounded-lg bg-brand-blue text-white text-xs font-bold shadow-lg">Location</span>
+                                    <div class="absolute top-3 left-3 z-10 flex gap-2">
+                                        <span v-if="vehicle.status === 'sold'" class="px-3 py-1 rounded-lg bg-red-600 text-white text-xs font-bold shadow-lg">VENDU</span>
+                                        <template v-else>
+                                            <span v-if="vehicle.type === 'sale'" class="px-3 py-1 rounded-lg bg-brand-orange text-white text-xs font-bold shadow-lg">Vente</span>
+                                            <span v-else class="px-3 py-1 rounded-lg bg-brand-blue text-white text-xs font-bold shadow-lg">Location</span>
+                                        </template>
                                     </div>
-                                    <img :src="vehicle.image" :alt="vehicle.make + ' ' + vehicle.model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <img 
+                                        :src="vehicle.main_image || '/images/unnamed.png'" 
+                                        :alt="vehicle.make + ' ' + vehicle.model" 
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                        :class="{ 'grayscale': vehicle.status === 'sold' }"
+                                    >
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </div>
 
@@ -398,7 +391,7 @@ const formatMileage = (km) => {
                                     </div>
 
                                     <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-                                        <p class="text-xl font-bold text-brand-blue">
+                                        <p class="text-xl font-bold" :class="vehicle.status === 'sold' ? 'text-slate-400' : 'text-brand-blue'">
                                             {{ formatPrice(vehicle.price) }}
                                             <span v-if="vehicle.type === 'rent'" class="text-sm font-normal text-slate-500">/mois</span>
                                         </p>
@@ -420,6 +413,25 @@ const formatMileage = (km) => {
                             <button @click="resetFilters" class="text-brand-blue font-semibold hover:underline">
                                 Réinitialiser les filtres
                             </button>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div v-if="vehicles.links && vehicles.links.length > 3" class="flex justify-center gap-2 mt-8">
+                            <button 
+                                v-for="link in vehicles.links" 
+                                :key="link.label"
+                                @click="link.url ? router.visit(link.url) : null"
+                                :disabled="!link.url"
+                                v-html="link.label"
+                                :class="[
+                                    'px-4 py-2 rounded-lg font-semibold text-sm transition-all',
+                                    link.active 
+                                        ? 'bg-brand-gradient text-white shadow-lg' 
+                                        : link.url 
+                                            ? 'bg-white text-slate-700 border border-slate-200 hover:border-brand-blue hover:text-brand-blue' 
+                                            : 'bg-slate-50 text-slate-400 cursor-not-allowed'
+                                ]"
+                            ></button>
                         </div>
                     </div>
                 </div>

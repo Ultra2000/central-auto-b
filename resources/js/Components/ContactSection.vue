@@ -25,8 +25,7 @@
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-2">Notre Adresse</h3>
                         <p class="text-slate-600 leading-relaxed">
-                            123 Avenue de l'Automobile<br>
-                            75000 Paris, France
+                            {{ $page.props.settings.contact_address }}
                         </p>
                         <a href="https://maps.google.com" target="_blank" class="inline-flex items-center gap-2 text-blue-600 font-semibold mt-4 hover:gap-3 transition-all">
                             Itinéraire <i class="ph-bold ph-arrow-right"></i>
@@ -40,13 +39,13 @@
                         </div>
                         <h3 class="text-xl font-bold text-slate-900 mb-2">Nous Contacter</h3>
                         <div class="space-y-3">
-                            <a href="tel:+33123456789" class="flex items-center gap-3 text-slate-600 hover:text-blue-600 transition-colors">
+                            <a :href="'tel:' + $page.props.settings.contact_phone" class="flex items-center gap-3 text-slate-600 hover:text-blue-600 transition-colors">
                                 <i class="ph-bold ph-phone"></i>
-                                01 23 45 67 89
+                                {{ $page.props.settings.contact_phone }}
                             </a>
-                            <a href="mailto:contact@centralautob.fr" class="flex items-center gap-3 text-slate-600 hover:text-blue-600 transition-colors">
+                            <a :href="'mailto:' + $page.props.settings.contact_email" class="flex items-center gap-3 text-slate-600 hover:text-blue-600 transition-colors">
                                 <i class="ph-bold ph-envelope"></i>
-                                contact@centralautob.fr
+                                {{ $page.props.settings.contact_email }}
                             </a>
                         </div>
                     </div>
@@ -79,6 +78,12 @@
                     <div class="bg-white p-8 md:p-10 rounded-3xl shadow-lg border border-slate-100 h-full">
                         <h3 class="text-2xl font-bold text-slate-900 mb-8">Envoyez-nous un message</h3>
                         
+                        <!-- Success Message -->
+                        <div v-if="$page.props.flash?.success" class="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3 text-green-700">
+                            <i class="ph-fill ph-check-circle text-2xl"></i>
+                            <p class="font-medium">{{ $page.props.flash.success }}</p>
+                        </div>
+
                         <form @submit.prevent="submitForm" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2">
@@ -132,14 +137,16 @@ const form = useForm({
     phone: '',
     email: '',
     subject: 'info',
-    message: ''
+    message: '',
+    type: 'contact'
 });
 
 const submitForm = () => {
-    // In a real app, you would post to a route
-    // form.post(route('contact.send'));
-    console.log('Form submitted:', form.data());
-    alert('Message envoyé (simulation) !');
-    form.reset();
+    form.post(route('leads.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+        }
+    });
 };
 </script>

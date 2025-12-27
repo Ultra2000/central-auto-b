@@ -38,12 +38,25 @@ class VehicleController extends Controller
             'gallery_images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'badge_type' => 'nullable|string',
             'is_available' => 'nullable|boolean',
-            'is_featured' => 'nullable|boolean'
+            'is_featured' => 'nullable|boolean',
+            'status' => 'nullable|string|in:available,sold,hidden'
         ]);
 
         // Set default values for boolean fields
         $validated['is_available'] = $validated['is_available'] ?? true;
         $validated['is_featured'] = $validated['is_featured'] ?? false;
+        $validated['status'] = $validated['status'] ?? 'available';
+
+        // Sync status and is_available
+        if ($validated['status'] === 'sold') {
+            $validated['sold_at'] = now();
+            $validated['is_available'] = false;
+        } elseif ($validated['status'] === 'hidden') {
+            $validated['is_available'] = false;
+        } else {
+            $validated['is_available'] = true;
+            $validated['sold_at'] = null;
+        }
 
         // Upload main image
         if ($request->hasFile('main_image')) {
@@ -99,6 +112,7 @@ class VehicleController extends Controller
             'badge_type' => 'nullable|string',
             'is_available' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
+            'status' => 'nullable|string|in:available,sold,hidden',
             'remove_main_image' => 'nullable|boolean',
             'removed_gallery_images' => 'nullable|array'
         ]);
@@ -106,6 +120,19 @@ class VehicleController extends Controller
         // Set default values for boolean fields
         $validated['is_available'] = $validated['is_available'] ?? $vehicle->is_available;
         $validated['is_featured'] = $validated['is_featured'] ?? $vehicle->is_featured;
+
+        // Status logic
+        if (isset($validated['status'])) {
+             if ($validated['status'] === 'sold' && $vehicle->status !== 'sold') {
+                $validated['sold_at'] = now();
+                $validated['is_available'] = false;
+            } elseif ($validated['status'] === 'available') {
+                $validated['sold_at'] = null;
+                $validated['is_available'] = true;
+            } elseif ($validated['status'] === 'hidden') {
+                $validated['is_available'] = false;
+            }
+        }
 
         // Handle main image removal
         if ($request->boolean('remove_main_image')) {

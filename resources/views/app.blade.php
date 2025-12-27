@@ -12,6 +12,65 @@
         <!-- Phosphor Icons -->
         <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
+        <!-- Google Translate -->
+        <script type="text/javascript">
+            let translateInitialized = false;
+            
+            function googleTranslateElementInit() {
+                const checkElement = setInterval(() => {
+                    const targetDiv = document.getElementById('google_translate_element');
+                    
+                    if (targetDiv && !translateInitialized) {
+                        clearInterval(checkElement);
+                        translateInitialized = true;
+                        
+                        try {
+                            new google.translate.TranslateElement({
+                                pageLanguage: 'fr',
+                                includedLanguages: 'en,es,de,it,fr,pt,ru,zh-CN,ja,ar,nl',
+                                layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+                                multilanguagePage: true
+                            }, 'google_translate_element');
+                        } catch(e) {
+                            console.error('Erreur Google Translate:', e);
+                        }
+                    }
+                }, 100);
+                
+                setTimeout(() => clearInterval(checkElement), 5000);
+            }
+        </script>
+        <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+        
+        <style>
+            /* Cacher les éléments Google Translate indésirables */
+            .goog-te-banner-frame,
+            .goog-te-balloon-frame {
+                display: none !important;
+            }
+            
+            body {
+                top: 0 !important;
+            }
+            
+            .goog-logo-link {
+                display: none !important;
+            }
+            
+            .goog-te-gadget {
+                color: transparent !important;
+            }
+            
+            #google_translate_element {
+                display: none !important;
+            }
+            
+            /* Empêcher le déplacement de la page */
+            .skiptranslate {
+                display: none !important;
+            }
+        </style>
+
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
@@ -19,5 +78,8 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+        
+        <!-- Google Translate Element (après Inertia) -->
+        <div id="google_translate_element"></div>
     </body>
 </html>

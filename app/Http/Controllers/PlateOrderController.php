@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\PlateOrder;
+use App\Mail\PlateOrderNotification;
+use App\Mail\PlateOrderConfirmation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class PlateOrderController extends Controller
@@ -23,9 +26,20 @@ class PlateOrderController extends Controller
             'customer_email' => 'required|email|max:255',
             'customer_phone' => 'required|string|max:20',
             'customer_address' => 'nullable|string|max:500',
+            'delivery_option' => 'required|in:pickup,delivery',
+            'delivery_address' => 'nullable|string|max:500',
+            'delivery_city' => 'nullable|string|max:100',
+            'delivery_postal_code' => 'nullable|string|max:10',
+            'delivery_cost' => 'nullable|numeric|min:0',
         ]);
 
-        PlateOrder::create($validated);
+        $order = PlateOrder::create($validated);
+
+        // Envoyer l'email de confirmation au client
+        Mail::to($order->customer_email)->send(new PlateOrderConfirmation($order));
+
+        // Envoyer la notification à l'admin
+        Mail::to(config('mail.admin_email', 'admin@centralauto-b.com'))->send(new PlateOrderNotification($order));
 
         return redirect()->back()->with('success', 'Votre commande de plaque a été enregistrée avec succès !');
     }

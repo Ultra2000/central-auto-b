@@ -26,6 +26,7 @@ const form = useForm({
     gallery_images: [],
     badge_type: props.vehicle?.badge_type || '',
     is_available: props.vehicle?.is_available ?? true,
+    status: props.vehicle?.status || (props.vehicle?.is_available ? 'available' : 'hidden'),
     is_featured: props.vehicle?.is_featured ?? false,
     remove_main_image: false,
     removed_gallery_images: [],
@@ -297,14 +298,57 @@ const removeGalleryImage = (index) => {
                         </div>
 
                         <!-- Availability -->
-                        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <label class="flex items-center p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
-                                <input type="checkbox" class="rounded border-slate-300 text-brand-blue shadow-sm focus:ring-brand-blue" v-model="form.is_available" />
-                                <span class="ml-3 text-sm font-medium text-slate-700 flex items-center gap-2">
-                                    <i class="ph-fill ph-eye text-brand-blue"></i>
-                                    Disponible sur le site
-                                </span>
-                            </label>
+                        <div class="mt-6">
+                            <InputLabel value="Statut du véhicule" class="text-slate-700 font-medium mb-3" />
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <label class="flex items-center p-4 border rounded-xl cursor-pointer transition-all"
+                                    :class="form.status === 'available' ? 'border-green-500 bg-green-50 ring-1 ring-green-500' : 'border-slate-200 hover:bg-slate-50'">
+                                    <input type="radio" value="available" v-model="form.status" class="sr-only" />
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                                            :class="form.status === 'available' ? 'bg-green-500 text-white' : 'bg-slate-100 text-slate-400'">
+                                            <i class="ph-fill ph-check-circle text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-sm" :class="form.status === 'available' ? 'text-green-700' : 'text-slate-700'">Disponible</div>
+                                            <div class="text-xs text-slate-500">Visible sur le site</div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-center p-4 border rounded-xl cursor-pointer transition-all"
+                                    :class="form.status === 'sold' ? 'border-red-500 bg-red-50 ring-1 ring-red-500' : 'border-slate-200 hover:bg-slate-50'">
+                                    <input type="radio" value="sold" v-model="form.status" class="sr-only" />
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                                            :class="form.status === 'sold' ? 'bg-red-500 text-white' : 'bg-slate-100 text-slate-400'">
+                                            <i class="ph-fill ph-tag text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-sm" :class="form.status === 'sold' ? 'text-red-700' : 'text-slate-700'">Vendu</div>
+                                            <div class="text-xs text-slate-500">Marqué comme vendu</div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="flex items-center p-4 border rounded-xl cursor-pointer transition-all"
+                                    :class="form.status === 'hidden' ? 'border-slate-500 bg-slate-100 ring-1 ring-slate-500' : 'border-slate-200 hover:bg-slate-50'">
+                                    <input type="radio" value="hidden" v-model="form.status" class="sr-only" />
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                                            :class="form.status === 'hidden' ? 'bg-slate-500 text-white' : 'bg-slate-100 text-slate-400'">
+                                            <i class="ph-fill ph-eye-slash text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-sm" :class="form.status === 'hidden' ? 'text-slate-800' : 'text-slate-700'">Masqué</div>
+                                            <div class="text-xs text-slate-500">Invisible sur le site</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
                             <label class="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all" 
                                 :class="form.is_featured ? 'border-brand-orange bg-brand-orange/5' : 'border-slate-200 hover:bg-slate-50'">
                                 <input type="checkbox" class="rounded border-slate-300 text-brand-orange shadow-sm focus:ring-brand-orange" v-model="form.is_featured" />
